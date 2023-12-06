@@ -24,7 +24,6 @@ pub fn despawn_offscreen(
         if (pos.x - camera_translation.x).abs() > camera_size.x / 2. + 10.
         || (pos.y - camera_translation.y).abs() > camera_size.y / 2. + 10. {
             commands.entity(bullet).despawn();
-            println!("despawned bullet");
         }
     }
 }
