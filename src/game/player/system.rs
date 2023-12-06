@@ -55,7 +55,7 @@ pub fn player_input(
             .and_then(|c| camera.viewport_to_world_2d(camera_global_transform, c)) {
                 let dir = cursor - transform.translation.xy();
                 if dir.length() >= 1. {
-                    transform.rotation = Quat::from_axis_angle(Vec3::new(0., 0., 1.), (-dir.x).atan2(dir.y));
+                    transform.rotation = Quat::from_axis_angle(Vec3::Z, (-dir.x).atan2(dir.y));
                 }
             }
         }

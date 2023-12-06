@@ -1,6 +1,7 @@
 use std::marker::PhantomData;
 use bevy::prelude::*;
 
+use crate::game::component::Velocity;
 use crate::my_assets::MyAssets;
 use crate::game::player::component::PlayerFriend;
 
@@ -48,11 +49,18 @@ impl Weapon for MainCannon {
             transform.rotation = entity_transform.rotation;
             let mut bundle = commands.spawn((
                 SpriteBundle {
+                    sprite: Sprite {
+                        anchor: bevy::sprite::Anchor::Custom(Vec2::new(0., 0.3)),
+                        ..Default::default()
+                    },
                     transform,
                     texture: texture.clone(),
                     ..Default::default()
                 },
                 Bullet,
+                Velocity {
+                    speed: forward * MAIN_BULLET_SPEED,
+                },
             ));
             if friendly {
                 bundle.insert(PlayerFriend);

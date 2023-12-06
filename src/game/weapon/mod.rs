@@ -20,6 +20,8 @@ impl Plugin for WeaponPlugin {
         ).in_set(GameSystems::Weapon))
         .add_systems(FixedUpdate, tick_bullets
             .in_set(GameSystems::BulletMovement))
+        .add_systems(FixedUpdate, enemy_collisions
+            .in_set(GameSystems::Collision))
         .add_systems(FixedUpdate, despawn_offscreen
             .in_set(GameSystems::Despawn))
         .add_systems(OnExit(GameState::Game), (
