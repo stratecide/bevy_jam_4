@@ -11,6 +11,6 @@ pub struct MyAssets {
     pub bullet_explosion: Handle<Image>,
     #[asset(path = "img/asteroid", collection(typed))]
     pub asteroids: Vec<Handle<Image>>,
-    //#[asset(path = "sound/shooting.ogg")]
-    //pub shooting: Handle<AudioSource>,
+    #[asset(path = "sound/sfx_laser2.ogg")]
+    pub shooting: Handle<AudioSource>,
 }

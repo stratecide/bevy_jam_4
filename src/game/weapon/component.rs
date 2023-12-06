@@ -1,5 +1,6 @@
 use std::marker::PhantomData;
 use bevy::prelude::*;
+use bevy::audio::*;
 
 use crate::game::component::Velocity;
 use crate::my_assets::MyAssets;
@@ -66,6 +67,14 @@ impl Weapon for MainCannon {
                 bundle.insert(PlayerFriend);
             }
         }
+        commands.spawn(AudioBundle {
+            source: assets.shooting.clone(),
+            settings: PlaybackSettings {
+                // get louder the more bullets are shot at once ..?
+                volume: Volume::Relative(VolumeLevel::new((self.bullets as f32).ln())),
+                ..Default::default()
+            }
+        });
     }
 }
 
