@@ -23,7 +23,7 @@ pub fn spawn_player(
 
 pub fn player_input(
     mut player_query: Query<&mut Transform, With<Player>>,
-    camera_query: Query<(&Camera, &GlobalTransform)>,
+    mut camera_query: Query<(&Camera, &mut Transform, &GlobalTransform), Without<Player>>,
     cursor_query: Query<&Window, With<PrimaryWindow>>,
     input: Res<Input<KeyCode>>,
     time: Res<Time>,
@@ -47,14 +47,16 @@ pub fn player_input(
             transform.translation += dir.normalize() * PLAYER_SPEED * time.delta_seconds();
         }
         
-        if let Some(cursor) = cursor_query.get_single().ok()
-        .and_then(|w| w.cursor_position())
-        .and_then(|c| camera_query.get_single().ok()
-            .and_then(|(camera, camera_transform)| camera.viewport_to_world_2d(camera_transform, c))
-        ) {
-            let dir = cursor - transform.translation.xy();
-            if dir.length() >= 1. {
-                transform.rotation = Quat::from_axis_angle(Vec3::new(0., 0., 1.), (-dir.x).atan2(dir.y));
+        if let Ok((camera, mut camera_transform, camera_global_transform)) = camera_query.get_single_mut() {
+            camera_transform.translation.x = transform.translation.x;
+            camera_transform.translation.y = transform.translation.y;
+            if let Some(cursor) = cursor_query.get_single().ok()
+            .and_then(|w| w.cursor_position())
+            .and_then(|c| camera.viewport_to_world_2d(camera_global_transform, c)) {
+                let dir = cursor - transform.translation.xy();
+                if dir.length() >= 1. {
+                    transform.rotation = Quat::from_axis_angle(Vec3::new(0., 0., 1.), (-dir.x).atan2(dir.y));
+                }
             }
         }
     }
