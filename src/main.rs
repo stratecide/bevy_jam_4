@@ -25,4 +25,3 @@ fn main() {
         .add_collection_to_loading_state::<_, my_assets::MyAssets>(GameState::Loading)
         .run();
 }
-

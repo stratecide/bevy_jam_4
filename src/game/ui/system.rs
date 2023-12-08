@@ -1,9 +1,14 @@
 use bevy::prelude::*;
 
+use crate::game::player::component::Upgrade;
+use crate::game::player::resource::Upgrades;
 use crate::my_assets::MyAssets;
-use crate::game::resource::*;
+use crate::game::{resource::*, PauseState};
 
 use super::component::*;
+
+const SHOP_OPTION_BORDER_NORMAL: Color = Color::rgb(0.3, 0.3, 0.3);
+const SHOP_OPTION_BORDER_HOVERED: Color = Color::rgb(1., 1., 1.);
 
 pub fn setup_ui(
     mut commands: Commands,
@@ -97,16 +102,165 @@ pub fn setup_ui(
     });
 }
 
-pub fn update_exp(
+pub fn update_expbar(
     mut expbar_query: Query<&mut Style, With<ExpBar>>,
-    mut experience: ResMut<Experience>,
+    level: Res<Level>,
+    experience: Res<Experience>,
 ) {
-    let mut needed_exp = 10;
-    while experience.0 >= needed_exp {
-        experience.0 -= needed_exp;
-        needed_exp = 10;
-    }
     for mut style in expbar_query.iter_mut() {
-        style.width = Val::Percent(100. - 100. * experience.0 as f32 / needed_exp as f32);
+        style.width = Val::Percent(100. - 100. * experience.0 as f32 / level.exp_needed_for_next_level() as f32);
+    }
+}
+
+pub fn open_shop(
+    commands: Commands,
+    shop_query: Query<&UpgradeShop>,
+    assets: Res<MyAssets>,
+    available_upgrades: Res<AvailableUpgrades>,
+    upgrades: Res<Upgrades>,
+    mut pause_state: ResMut<NextState<PauseState>>,
+) {
+    if available_upgrades.0 == 0 || !shop_query.is_empty() {
+        return;
+    }
+    pause_state.set(PauseState::Shop);
+    _open_shop(&upgrades, commands, &assets);
+}
+
+fn _open_shop(
+    upgrades: &Upgrades,
+    mut commands: Commands,
+    assets: &MyAssets,
+) {
+    let options = upgrades.generate_options();
+    commands.spawn((
+        NodeBundle {
+            style: Style {
+                width: Val::Percent(100.),
+                height: Val::Percent(100.),
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                ..Default::default()
+            },
+            background_color: Color::rgba(0., 0., 0., 0.2).into(),
+            ..Default::default()
+        },
+        UpgradeShop,
+    ))
+    .with_children(|parent| {
+        parent.spawn(NodeBundle {
+            style: Style {
+                flex_direction: FlexDirection::Column,
+                align_items: AlignItems::Center,
+                ..Default::default()
+            },
+            background_color: Color::rgba(0., 0., 0., 0.8).into(),
+            ..Default::default()
+        })
+        .with_children(|parent| {
+            parent.spawn((
+                TextBundle {
+                    text: Text::from_section("Choose your Upgrade!", TextStyle {
+                        font: assets.font.clone(),
+                        font_size: 40.,
+                        ..Default::default()
+                    }),
+                    style: Style {
+                        margin: UiRect::top(Val::Px(30.)),
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                }.with_text_alignment(TextAlignment::Center),
+                Label,
+            ));
+
+            parent.spawn(NodeBundle {
+                style: Style {
+                    width: Val::Vw(60.),
+                    ..Default::default()
+                },
+                ..Default::default()
+            })
+            .with_children(|parent| {
+                for option in options {
+                    parent.spawn((
+                        NodeBundle {
+                            style: Style {
+                                margin: UiRect::all(Val::Px(30.)),
+                                padding: UiRect::all(Val::Px(5.)),
+                                flex_basis: Val::Percent(50.),
+                                flex_direction: FlexDirection::Column,
+                                align_items: AlignItems::Center,
+                                ..Default::default()
+                            },
+                            border_color: SHOP_OPTION_BORDER_NORMAL.into(),
+                            background_color: Color::rgb(0.3, 0.3, 0.3).into(),
+                            ..Default::default()
+                        },
+                        Interaction::None,
+                        option,
+                    ))
+                    .with_children(|parent| {
+                        parent.spawn((
+                            TextBundle {
+                                text: Text::from_section(option.title(), TextStyle {
+                                    font: assets.font.clone(),
+                                    font_size: 40.,
+                                    ..Default::default()
+                                }),
+                                style: Style {
+                                    margin: UiRect::bottom(Val::Px(10.)),
+                                    ..Default::default()
+                                },
+                                ..Default::default()
+                            }.with_text_alignment(TextAlignment::Center),
+                            Label,
+                        ));
+                        parent.spawn((
+                            TextBundle {
+                                text: Text::from_section(option.description(), TextStyle {
+                                    font: assets.font.clone(),
+                                    font_size: 20.,
+                                    ..Default::default()
+                                }),
+                                ..Default::default()
+                            },
+                            Label,
+                        ));
+                    });
+                }
+            });
+        });
+    });
+}
+
+pub fn update_shop(
+    mut commands: Commands,
+    shop_query: Query<Entity, With<UpgradeShop>>,
+    mut upgrade_query: Query<(&Interaction, &mut BorderColor, &Upgrade), (Changed<Interaction>, Without<UpgradeShop>)>,
+    assets: Res<MyAssets>,
+    mut available_upgrades: ResMut<AvailableUpgrades>,
+    mut pause_state: ResMut<NextState<PauseState>>,
+    mut upgrades: ResMut<Upgrades>,
+) {
+    for (interaction, mut color, option) in upgrade_query.iter_mut() {
+        match *interaction {
+            Interaction::None => *color = SHOP_OPTION_BORDER_NORMAL.into(),
+            Interaction::Hovered => *color = SHOP_OPTION_BORDER_HOVERED.into(),
+            Interaction::Pressed => {
+                available_upgrades.0 -= 1;
+                // apply selected option
+                let new_level = upgrades.get(*option) + 1;
+                upgrades.0.insert(*option, new_level);
+                // rebuild shop or close it
+                commands.entity(shop_query.single()).despawn_recursive();
+                if available_upgrades.0 > 0 {
+                    _open_shop(&upgrades, commands, &assets);
+                } else {
+                    pause_state.set(PauseState::Unpaused);
+                }
+                return;
+            }
+        }
     }
 }

@@ -25,9 +25,10 @@ impl Plugin for GamePlugin {
         .add_plugins(weapon::WeaponPlugin)
         .add_plugins(drops::DropsPlugin)
         .add_plugins(ui::UiPlugin)
+        .add_state::<PauseState>()
         .add_systems(OnEnter(GameState::Game), (
             spawn_camera,
-            reset_exp,
+            reset_resources,
         ))
         .configure_sets(FixedUpdate, (
             GameSystems::UpdateVelocity,
@@ -37,11 +38,20 @@ impl Plugin for GamePlugin {
             GameSystems::Despawn,
             GameSystems::Collision,
             GameSystems::SpawnEnemy,
-        ).chain().run_if(in_state(GameState::Game)))
+        ).chain().run_if(in_state(GameState::Game).and_then(in_state(PauseState::Unpaused))))
         .add_systems(FixedUpdate, move_non_bullets.in_set(GameSystems::ShipMovement))
         .add_systems(FixedUpdate, fade_out.before(GameSystems::Collision))
+        .add_systems(FixedUpdate, level_up.run_if(in_state(GameState::Game).and_then(in_state(PauseState::Unpaused))))
         ;
     }
+}
+
+#[derive(Clone, Eq, PartialEq, Debug, Hash, Default, States)]
+pub enum PauseState {
+    #[default]
+    Unpaused,
+    Paused,
+    Shop,
 }
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, SystemSet)]

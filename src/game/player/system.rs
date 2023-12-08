@@ -3,7 +3,7 @@ use bevy::window::PrimaryWindow;
 
 use crate::{my_assets::MyAssets, game::{weapon::component::MainCannon, ZOOM}};
 
-use super::{component::*, PLAYER_SPEED};
+use super::{component::*, PLAYER_SPEED, resource::Upgrades};
 
 pub fn spawn_player(
     mut commands: Commands,
@@ -27,6 +27,7 @@ pub fn player_input(
     cursor_query: Query<&Window, With<PrimaryWindow>>,
     input: Res<Input<KeyCode>>,
     time: Res<Time>,
+    upgrades: Res<Upgrades>,
 ) {
     if let Ok(mut transform) = player_query.get_single_mut() {
         let mut dir = Vec3::ZERO;
@@ -44,7 +45,7 @@ pub fn player_input(
         }
 
         if dir != Vec3::ZERO {
-            transform.translation += dir.normalize() * PLAYER_SPEED * time.delta_seconds();
+            transform.translation += dir.normalize() * PLAYER_SPEED * time.delta_seconds() * (1. + upgrades.get(Upgrade::MovementSpeed) as f32 * MOVEMENT_SPEED_BONUS);
         }
         
         if let Ok((camera, camera_global_transform)) = camera_query.get_single() {

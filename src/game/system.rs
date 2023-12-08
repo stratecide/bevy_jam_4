@@ -1,5 +1,8 @@
+use std::collections::HashMap;
+
 use bevy::prelude::*;
 
+use super::player::resource::Upgrades;
 use super::weapon::component::Bullet;
 use super::resource::*;
 use super::component::*;
@@ -13,10 +16,25 @@ pub fn spawn_camera(
     });
 }
 
-pub fn reset_exp(
+pub fn reset_resources(
     mut commands: Commands
 ) {
+    commands.insert_resource(Level(1));
     commands.insert_resource(Experience(0));
+    commands.insert_resource(AvailableUpgrades(0));
+    commands.insert_resource(Upgrades(HashMap::new()));
+}
+
+pub fn level_up(
+    mut level: ResMut<Level>,
+    mut exp: ResMut<Experience>,
+    mut upgrades: ResMut<AvailableUpgrades>,
+) {
+    while exp.0 >= level.exp_needed_for_next_level() {
+        exp.0 -= level.exp_needed_for_next_level();
+        level.0 += 1;
+        upgrades.0 += 1;
+    }
 }
 
 pub fn move_non_bullets(
