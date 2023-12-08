@@ -6,7 +6,7 @@ use bevy::prelude::*;
 
 use crate::game::{GameSystems, player::PLAYER_SPEED};
 
-pub const MAX_ASTEROID_SPEED: f32 = PLAYER_SPEED * 1.5;
+pub const MAX_ASTEROID_SPEED: f32 = PLAYER_SPEED * 0.5;
 
 #[derive(Debug)]
 pub struct AsteroidPlugin;

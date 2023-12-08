@@ -9,6 +9,8 @@ use bevy::prelude::*;
 
 use crate::GameState;
 
+pub const ZOOM: f32 = 1.5;
+
 #[derive(Debug)]
 pub struct GamePlugin;
 

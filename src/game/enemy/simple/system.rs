@@ -20,15 +20,15 @@ pub fn spawn_small_enemy(
         Ok(c) => c,
         _ => return,
     };
-    let camera_translation = player_transform.translation().xy();
+    let player_translation = player_transform.translation().xy();
     let mut rng = thread_rng();
     if rng.gen_bool(0.01) {
         let angle = rng.gen_range(0.0..(2. * PI));
         commands.spawn((
             SpriteBundle {
                 transform: Transform::from_xyz(
-                    camera_translation.x + angle.cos() * SPAWN_DISTANCE,
-                    camera_translation.y + angle.sin() * SPAWN_DISTANCE,
+                    player_translation.x + angle.cos() * SPAWN_DISTANCE,
+                    player_translation.y + angle.sin() * SPAWN_DISTANCE,
                     0.
                 ),
                 texture: assets.simple_enemy.clone(),

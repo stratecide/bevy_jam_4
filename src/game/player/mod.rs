@@ -25,7 +25,8 @@ impl Plugin for PlayerPlugin {
         ))
         .add_systems(FixedUpdate, (
             player_input,
-        ).in_set(GameSystems::ShipMovement))
+            update_camera,
+        ).in_set(GameSystems::ShipMovement).chain())
         ;
     }
 }

@@ -9,9 +9,9 @@ use self::component::*;
 
 use bevy::prelude::*;
 
-use super::{despawn, GameSystems};
+use super::{despawn, GameSystems, ZOOM};
 
-pub const SPAWN_DISTANCE: f32 = 1000.;
+pub const SPAWN_DISTANCE: f32 = 1000. * ZOOM;
 
 #[derive(Debug)]
 pub struct EnemyPlugin;
