@@ -1,6 +1,7 @@
 pub mod asteroid;
 pub mod simple;
 pub mod component;
+pub mod resource;
 mod system;
 use system::*;
 use crate::GameState;

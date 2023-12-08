@@ -7,7 +7,9 @@ use crate::game::component::FadeAway;
 use crate::game::component::Velocity;
 use crate::game::enemy::component::Enemy;
 use crate::game::enemy::component::Hp;
+use crate::game::enemy::resource::EnemyUpgrades;
 use crate::game::player::component::PlayerFriend;
+use crate::game::player::resource::Upgrades;
 use crate::my_assets::MyAssets;
 
 use super::Weapon;
@@ -45,15 +47,22 @@ pub fn despawn_bullets(
 
 pub fn tick_weapons<W: Weapon>(
     mut commands: Commands,
-    mut player_query: Query<(&mut WeaponCooldown<W>, &W, &Transform, Option<&PlayerFriend>)>,
+    mut weapon_query: Query<(&mut WeaponCooldown<W>, &W, &Transform, Option<&PlayerFriend>)>,
     assets: Res<MyAssets>,
+    player_upgrades: Res<Upgrades>,
+    enemy_upgrades: Res<EnemyUpgrades>,
     time: Res<Time>,
 ) {
-    for (mut cooldown, weapon, transform, friendly) in player_query.iter_mut() {
+    for (mut cooldown, weapon, transform, friendly) in weapon_query.iter_mut() {
         cooldown.cooldown -= time.delta_seconds();
         if cooldown.cooldown <= 0. {
             cooldown.cooldown = weapon.max_cooldown();
-            weapon.fire(&mut commands, transform, friendly.is_some(), &assets);
+            let upgrades = if friendly.is_some() {
+                &player_upgrades.0
+            } else {
+                &enemy_upgrades.0
+            };
+            weapon.fire(&mut commands, transform, upgrades, friendly.is_some(), &assets);
         }
     }
 }

@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use bevy::prelude::*;
 
+use super::enemy::resource::EnemyUpgrades;
 use super::player::resource::Upgrades;
 use super::weapon::component::Bullet;
 use super::resource::*;
@@ -23,6 +24,7 @@ pub fn reset_resources(
     commands.insert_resource(Experience(0));
     commands.insert_resource(AvailableUpgrades(0));
     commands.insert_resource(Upgrades(HashMap::new()));
+    commands.insert_resource(EnemyUpgrades(HashMap::new()));
 }
 
 pub fn level_up(

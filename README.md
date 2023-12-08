@@ -18,6 +18,7 @@ TODO:
 - Player death (3 lives?)
 - Game-Over Screen
 - Main Menu
+- Pause / Unpause game
 - Effects
     - Explosion sound
     - Hit sound
