@@ -1,4 +1,5 @@
 pub mod asteroid;
+pub mod simple;
 pub mod component;
 mod system;
 use system::*;
@@ -10,6 +11,7 @@ use bevy::prelude::*;
 
 use super::{despawn, GameSystems};
 
+pub const SPAWN_DISTANCE: f32 = 1000.;
 
 #[derive(Debug)]
 pub struct EnemyPlugin;
@@ -18,9 +20,12 @@ impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut App) {
         app
         .add_plugins(asteroid::AsteroidPlugin)
+        .add_plugins(simple::SimpleEnemyPlugin)
         .add_systems(OnExit(GameState::Game), (
             despawn::<Enemy>,
         ))
+        .add_systems(FixedUpdate, update_enemy_velocity
+            .in_set(GameSystems::UpdateVelocity))
         .add_systems(FixedUpdate, despawn_dead.in_set(GameSystems::Despawn))
         ;
     }

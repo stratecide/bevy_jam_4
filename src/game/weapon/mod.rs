@@ -18,11 +18,11 @@ impl Plugin for WeaponPlugin {
         .add_systems(FixedUpdate, (
             tick_weapons::<MainCannon>,
         ).in_set(GameSystems::Weapon))
-        .add_systems(FixedUpdate, tick_bullets
+        .add_systems(FixedUpdate, move_bullets
             .in_set(GameSystems::BulletMovement))
         .add_systems(FixedUpdate, enemy_collisions
             .in_set(GameSystems::Collision))
-        .add_systems(FixedUpdate, despawn_offscreen
+        .add_systems(FixedUpdate, despawn_bullets
             .in_set(GameSystems::Despawn))
         .add_systems(OnExit(GameState::Game), (
             despawn::<Bullet>,

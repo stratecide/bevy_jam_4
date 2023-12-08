@@ -6,8 +6,6 @@ use crate::game::component::Velocity;
 use crate::my_assets::MyAssets;
 use crate::game::player::component::PlayerFriend;
 
-pub const MAIN_BULLET_SPEED: f32 = 1000.;
-
 pub trait Weapon: Component {
     fn max_cooldown(&self) -> f32;
     fn fire(&self, commands: &mut Commands, entity_transform: &Transform, friendly: bool, assets: &Res<MyAssets>);
@@ -42,7 +40,11 @@ impl Weapon for MainCannon {
     fn fire(&self, commands: &mut Commands, entity_transform: &Transform, friendly: bool, assets: &Res<MyAssets>) {
         let forward: Vec2 = entity_transform.local_y().xy();
         let sideways: Vec2 = Vec2::new(forward.y, -forward.x);
-        let texture = &assets.player_bullet;
+        let (texture, bullet_speed) = if friendly {
+            (&assets.player_bullet, 1000.)
+        } else {
+            (&assets.enemy_bullet, 300.)
+        };
         for i in 0..self.bullets {
             let mut pos = entity_transform.translation.xy() + forward * 35. * entity_transform.scale.y;
             pos += ((i * 2 + 1) as f32 - self.bullets as f32) * sideways * 5.;
@@ -58,9 +60,9 @@ impl Weapon for MainCannon {
                     texture: texture.clone(),
                     ..Default::default()
                 },
-                Bullet,
+                Bullet::default(),
                 Velocity {
-                    speed: forward * MAIN_BULLET_SPEED,
+                    speed: forward * bullet_speed,
                 },
             ));
             if friendly {
@@ -71,15 +73,17 @@ impl Weapon for MainCannon {
             source: assets.shooting.clone(),
             settings: PlaybackSettings {
                 // get louder the more bullets are shot at once ..?
-                volume: Volume::Relative(VolumeLevel::new((self.bullets as f32).ln())),
+                volume: Volume::Relative(VolumeLevel::new((self.bullets as f32 + 1.).ln())),
                 ..Default::default()
             }
         });
     }
 }
 
-#[derive(Component)]
-pub struct Bullet;
+#[derive(Component, Default)]
+pub struct Bullet {
+    pub despawn_timer: f32,
+}
 
 #[derive(Component)]
 pub struct WeaponCooldown<W: Weapon> {

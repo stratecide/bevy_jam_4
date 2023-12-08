@@ -17,7 +17,7 @@ pub fn spawn_player(
         },
         Player {},
         PlayerFriend,
-        MainCannon::new(4, 1.),
+        MainCannon::new(1, 0.3),
     ));
 }
 

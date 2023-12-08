@@ -22,6 +22,7 @@ impl Plugin for GamePlugin {
             spawn_camera,
         ))
         .configure_sets(FixedUpdate, (
+            GameSystems::UpdateVelocity,
             GameSystems::ShipMovement,
             GameSystems::Weapon,
             GameSystems::BulletMovement,
@@ -37,6 +38,7 @@ impl Plugin for GamePlugin {
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, SystemSet)]
 pub enum GameSystems {
+    UpdateVelocity,
     ShipMovement,
     Weapon,
     BulletMovement,

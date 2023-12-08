@@ -13,10 +13,11 @@ use crate::my_assets::MyAssets;
 use super::Weapon;
 use super::component::*;
 
-pub fn despawn_offscreen(
+pub fn despawn_bullets(
     mut commands: Commands,
-    bullet_query: Query<(Entity, &Transform), With<Bullet>>,
-    camera_query: Query<(&Camera, &GlobalTransform)>,
+    mut bullet_query: Query<(Entity, &mut Bullet, &Transform)>,
+    camera_query: Query<(&Camera, &GlobalTransform), Without<Bullet>>,
+    time: Res<Time>,
 ) {
     let (camera, camera_transform) = match camera_query.get_single() {
         Ok(c) => c,
@@ -27,11 +28,17 @@ pub fn despawn_offscreen(
         _ => return,
     };
     let camera_translation = camera_transform.translation().xy();
-    for (bullet, bullet_transform) in bullet_query.iter() {
+    let dt = time.delta_seconds();
+    for (entity, mut bullet, bullet_transform) in bullet_query.iter_mut() {
         let pos = bullet_transform.translation.xy();
         if (pos.x - camera_translation.x).abs() > camera_size.x / 2. + 10.
         || (pos.y - camera_translation.y).abs() > camera_size.y / 2. + 10. {
-            commands.entity(bullet).despawn();
+            bullet.despawn_timer += dt;
+            if bullet.despawn_timer >= 10. {
+                commands.entity(entity).despawn();
+            }
+        } else {
+            bullet.despawn_timer = 0.;
         }
     }
 }
@@ -51,7 +58,7 @@ pub fn tick_weapons<W: Weapon>(
     }
 }
 
-pub fn tick_bullets(
+pub fn move_bullets(
     mut bullet_query: Query<(&mut Transform, &Velocity), With<Bullet>>,
     time: Res<Time>,
 ) {
