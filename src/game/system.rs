@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 
-use super::{component::{FadeAway, Velocity}, weapon::component::Bullet};
+use super::weapon::component::Bullet;
+use super::resource::*;
+use super::component::*;
 
 pub fn spawn_camera(
     mut commands: Commands
@@ -9,6 +11,12 @@ pub fn spawn_camera(
         transform: Transform::from_xyz(0., 0., 1000.),
         ..Default::default()
     });
+}
+
+pub fn reset_exp(
+    mut commands: Commands
+) {
+    commands.insert_resource(Experience(0));
 }
 
 pub fn move_non_bullets(

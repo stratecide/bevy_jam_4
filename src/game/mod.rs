@@ -1,9 +1,12 @@
 pub mod player;
 pub mod weapon;
 pub mod enemy;
+pub mod drops;
+pub mod ui;
 mod system;
 use system::*;
 pub mod component;
+pub mod resource;
 
 use bevy::prelude::*;
 
@@ -20,8 +23,11 @@ impl Plugin for GamePlugin {
         .add_plugins(enemy::EnemyPlugin)
         .add_plugins(player::PlayerPlugin)
         .add_plugins(weapon::WeaponPlugin)
+        .add_plugins(drops::DropsPlugin)
+        .add_plugins(ui::UiPlugin)
         .add_systems(OnEnter(GameState::Game), (
             spawn_camera,
+            reset_exp,
         ))
         .configure_sets(FixedUpdate, (
             GameSystems::UpdateVelocity,

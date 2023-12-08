@@ -11,7 +11,7 @@ pub fn spawn_player(
 ) {
     commands.spawn((
         SpriteBundle {
-            transform: Transform::from_xyz(0., 0., 0.),
+            transform: Transform::from_xyz(0., 0., 20.),
             texture: assets.player.clone(),
             ..Default::default()
         },

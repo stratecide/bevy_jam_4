@@ -1,17 +1,30 @@
 use bevy::prelude::*;
 
 use crate::game::component::*;
+use crate::game::drops::component::*;
 use crate::game::player::component::*;
+use crate::my_assets::MyAssets;
 
 use super::component::*;
 
 pub fn despawn_dead(
     mut commands: Commands,
-    entity_query: Query<(Entity, &Hp)>,
+    entity_query: Query<(Entity, &Hp, &Transform, Option<&DropsExperience>)>,
+    assets: Res<MyAssets>,
 ) {
-    for (entity, hp) in entity_query.iter() {
+    for (entity, hp, transform, exp) in entity_query.iter() {
         if hp.0 == 0 {
             commands.entity(entity).despawn();
+            if let Some(exp) = exp {
+                commands.spawn((
+                    Drop::Experience(exp.0),
+                    SpriteBundle {
+                        transform: Transform::from_xyz(transform.translation.x, transform.translation.y, 0.).with_scale(Vec3::splat((exp.0 as f32 + 1.).ln())),
+                        texture: assets.exp.clone(),
+                        ..Default::default()
+                    },
+                ));
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ pub fn spawn_asteroids(
                 transform: Transform::from_xyz(
                     player_translation.x + angle.cos() * SPAWN_DISTANCE,
                     player_translation.y + angle.sin() * SPAWN_DISTANCE,
-                    0.
+                    8.
                 ),
                 texture: assets.asteroids.choose(&mut rng).cloned().unwrap(),
                 ..Default::default()

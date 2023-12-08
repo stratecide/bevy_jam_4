@@ -48,7 +48,7 @@ impl Weapon for MainCannon {
         for i in 0..self.bullets {
             let mut pos = entity_transform.translation.xy() + forward * 35. * entity_transform.scale.y;
             pos += ((i * 2 + 1) as f32 - self.bullets as f32) * sideways * 5.;
-            let mut transform = Transform::from_xyz(pos.x, pos.y, entity_transform.translation.z);
+            let mut transform = Transform::from_xyz(pos.x, pos.y, entity_transform.translation.z - 1.);
             transform.rotation = entity_transform.rotation;
             let mut bundle = commands.spawn((
                 SpriteBundle {
