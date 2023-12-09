@@ -16,6 +16,8 @@ impl Plugin for DropsPlugin {
         app
         .add_systems(FixedUpdate, collect_drops
             .in_set(GameSystems::Collision))
+        .add_systems(FixedUpdate, move_vacuumed
+            .in_set(GameSystems::BulletMovement))
         ;
     }
 }

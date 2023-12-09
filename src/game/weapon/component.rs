@@ -79,7 +79,7 @@ impl Weapon for MainCannon {
             source: assets.shooting.clone(),
             settings: PlaybackSettings {
                 // get louder the more bullets are shot at once ..?
-                volume: Volume::Relative(VolumeLevel::new(1.)),
+                volume: Volume::Relative(VolumeLevel::new(0.5)),
                 ..Default::default()
             }
         });
@@ -149,7 +149,7 @@ impl Weapon for StarCannon {
             source: assets.shooting.clone(),
             settings: PlaybackSettings {
                 // get louder the more bullets are shot at once ..?
-                volume: Volume::Relative(VolumeLevel::new(1.)),
+                volume: Volume::Relative(VolumeLevel::new(0.4)),
                 ..Default::default()
             }
         });

@@ -24,6 +24,8 @@ pub struct MyAssets {
     pub exp: Handle<Image>,
     #[asset(path = "img/star_gold.png")]
     pub coin: Handle<Image>,
+    #[asset(path = "img/powerupBlue_star.png")]
+    pub vacuum: Handle<Image>,
 
     #[asset(path = "sound/sfx_laser2.ogg")]
     pub shooting: Handle<AudioSource>,

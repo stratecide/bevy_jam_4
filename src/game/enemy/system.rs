@@ -37,8 +37,8 @@ pub fn despawn_dead(
 }
 
 pub fn update_enemy_velocity(
-    mut enemy_query: Query<(&mut Velocity, &mut Transform, &MovementPattern), With<Enemy>>,
-    player_query: Query<&Transform, (With<Player>, Without<Enemy>)>,
+    mut enemy_query: Query<(&mut Velocity, &mut Transform, &MovementPattern)>,
+    player_query: Query<&Transform, (With<Player>, Without<MovementPattern>)>,
     time: Res<Time>,
     wave_timer: Res<WaveTimer>,
 ) {

@@ -82,7 +82,7 @@ impl Waves {
             });
         }
         result.add_wave(12., |difficulty, commands, center, assets| {
-            spawn_red4_ring(commands, center, assets, difficulty, 6 + difficulty * 2, None);
+            spawn_red4_ring(commands, center, assets, difficulty, 6 + difficulty * 2, Some(Drop::Vacuum));
         });
 
         result.add_wave(0., |_difficulty, commands, center, assets| {
@@ -110,7 +110,7 @@ impl Waves {
         }
 
         result.add_wave(4., |_difficulty, commands, center, assets| {
-            spawn_debris(commands, center, assets, Drop::Coin, 0);
+            spawn_debris(commands, center, assets, Drop::Vacuum, 0);
         });
         result
     }
