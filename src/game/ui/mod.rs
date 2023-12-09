@@ -19,10 +19,11 @@ impl Plugin for UiPlugin {
         .add_systems(FixedUpdate, (
             update_expbar,
             update_life_counter,
+            update_wave_counter,
             update_score_counter,
         ).in_set(GameSystems::SpawnEnemy))
-        .add_systems(FixedUpdate, open_shop.run_if(in_state(GameState::Game).and_then(in_state(PauseState::Unpaused))))
-        .add_systems(FixedUpdate, update_shop.run_if(in_state(GameState::Game).and_then(in_state(PauseState::Shop))))
+        .add_systems(Update, open_shop.run_if(in_state(GameState::Game).and_then(in_state(PauseState::Unpaused))))
+        .add_systems(Update, update_shop.run_if(in_state(GameState::Game).and_then(in_state(PauseState::Shop))))
         /*.add_systems(OnExit(GameState::Game), (
             despawn::<Player>,
         ))*/

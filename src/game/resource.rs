@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 
 #[derive(Resource)]
+pub struct WaveTimer(pub f32);
+
+#[derive(Resource)]
 pub struct Score(pub usize);
 
 #[derive(Resource)]

@@ -4,7 +4,7 @@ use crate::game::{component::*, increase_score};
 use crate::game::drops::component::*;
 use crate::game::player::component::*;
 use crate::game::player::resource::Upgrades;
-use crate::game::resource::Score;
+use crate::game::resource::{Score, WaveTimer};
 use crate::my_assets::MyAssets;
 
 use super::component::*;
@@ -40,6 +40,7 @@ pub fn update_enemy_velocity(
     mut enemy_query: Query<(&mut Velocity, &mut Transform, &MovementPattern), With<Enemy>>,
     player_query: Query<&Transform, (With<Player>, Without<Enemy>)>,
     time: Res<Time>,
+    wave_timer: Res<WaveTimer>,
 ) {
     let player = match player_query.get_single() {
         Ok(p) => p,
@@ -55,10 +56,26 @@ pub fn update_enemy_velocity(
                         angle_diff *= data.turn_speed * time.delta_seconds() / angle_diff.abs();
                     }
                     velocity.speed = velocity.speed.rotate(Vec2::from_angle(angle_diff));
-                    transform.rotation = Quat::from_axis_angle(Vec3::Z, (-velocity.speed.x).atan2(velocity.speed.y));
+                }
+            }
+            MovementPattern::KeepDistance(data) => {
+                let distance = player.translation.xy() - transform.translation.xy();
+                let dir = if distance.length() < data.target_distance {
+                    -distance.normalize()
+                } else {
+                    distance.normalize()
+                };
+                velocity.speed = dir * data.max_speed;
+                let factor = (distance.length() - data.target_distance).abs() / data.target_distance * 3.;
+                if factor < 1. {
+                    velocity.speed *= factor;
+                    let max_sideways = data.max_speed * (1. - factor * factor).sqrt();
+                    let wave = dir.x.atan2(-dir.y) + wave_timer.0 / 10.;
+                    velocity.speed += max_sideways * wave.sin() * Vec2::new(dir.y, -dir.x);
                 }
             }
         }
+        transform.rotation = Quat::from_axis_angle(Vec3::Z, (-velocity.speed.x).atan2(velocity.speed.y));
     }
 }
 

@@ -17,6 +17,7 @@ impl Plugin for WeaponPlugin {
         app
         .add_systems(FixedUpdate, (
             tick_weapons::<MainCannon>,
+            tick_weapons::<StarCannon>,
         ).in_set(GameSystems::Weapon))
         .add_systems(FixedUpdate, move_bullets
             .in_set(GameSystems::BulletMovement))

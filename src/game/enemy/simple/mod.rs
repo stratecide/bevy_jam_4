@@ -14,8 +14,6 @@ impl Plugin for SimpleEnemyPlugin {
         app
         .add_systems(FixedUpdate, spawn_small_enemy
             .in_set(GameSystems::SpawnEnemy))
-        //.add_systems(FixedUpdate, move_asteroids
-        //    .in_set(GameSystems::ShipMovement))
         ;
     }
 }

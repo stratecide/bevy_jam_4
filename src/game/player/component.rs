@@ -37,6 +37,8 @@ pub enum Upgrade {
     MovementSpeed,
     MainBulletCount,
     MainBulletCooldown,
+    StarBulletCount,
+    StarBulletCooldown,
 }
 
 impl Upgrade {
@@ -46,6 +48,8 @@ impl Upgrade {
             Self::MovementSpeed => "Speed +",
             Self::MainBulletCount => "Extra Bullet (Main)",
             Self::MainBulletCooldown => "Weapon Cooldown (Main)",
+            Self::StarBulletCount => "Extra Bullet (Star)",
+            Self::StarBulletCooldown => "Weapon Cooldown (Star)",
         }
     }
 
@@ -55,6 +59,8 @@ impl Upgrade {
             Self::MovementSpeed => format!("Increases your movement speed by {}% (additive)", (MOVEMENT_SPEED_BONUS * 100.).round()),
             Self::MainBulletCount => format!("You shoot one additional bullet when you shoot using your main weapon"),
             Self::MainBulletCooldown => format!("Reduces the cooldown of your main weapon by {}% (multiplicative)", (MAIN_WEAPON_COOLDOWN_REDUCTION * 100.).round()),
+            Self::StarBulletCount => format!("You shoot one additional bullet when you shoot using your Star weapon"),
+            Self::StarBulletCooldown => format!("Reduces the cooldown of your Star weapon by {}% (multiplicative)", (MAIN_WEAPON_COOLDOWN_REDUCTION * 100.).round()),
         }
     }
 }

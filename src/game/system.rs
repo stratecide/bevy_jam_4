@@ -21,6 +21,7 @@ pub fn spawn_camera(
 pub fn reset_resources(
     mut commands: Commands
 ) {
+    commands.insert_resource(WaveTimer(0.));
     commands.insert_resource(Score(0));
     commands.insert_resource(Level(1));
     commands.insert_resource(Experience(0));
@@ -42,6 +43,13 @@ pub fn level_up(
         level.0 += 1;
         upgrades.0 += 1;
     }
+}
+
+pub fn tick_wave_timer(
+    mut wave_timer: ResMut<WaveTimer>,
+    timer: Res<Time>,
+) {
+    wave_timer.0 += timer.delta_seconds();
 }
 
 pub fn move_non_bullets(

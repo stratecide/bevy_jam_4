@@ -11,3 +11,6 @@ pub struct LifeCounter;
 
 #[derive(Component)]
 pub struct ScoreCounter;
+
+#[derive(Component)]
+pub struct WaveTimerUi;

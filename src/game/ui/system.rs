@@ -78,6 +78,42 @@ pub fn setup_ui(
                 ));
             });
 
+            // wave timer
+            parent.spawn((
+                NodeBundle {
+                    style: Style {
+                        min_width: Val::Px(120.),
+                        align_items: AlignItems::Center,
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                },
+            ))
+            .with_children(|parent| {
+                parent.spawn((
+                    TextBundle {
+                        text: Text::from_sections([
+                            TextSection::new("", TextStyle {
+                                font: assets.font.clone(),
+                                font_size: 25.,
+                                ..Default::default()
+                            }),
+                            TextSection::new("", TextStyle {
+                                font: assets.font.clone(),
+                                font_size: 16.,
+                                ..Default::default()
+                            }),
+                        ]),
+                        style: Style {
+                            ..Default::default()
+                        },
+                        ..Default::default()
+                    },
+                    Label,
+                    WaveTimerUi,
+                ));
+            });
+
             // score
             parent.spawn((
                 NodeBundle {
@@ -206,7 +242,20 @@ pub fn update_life_counter(
     upgrades: Res<Upgrades>,
 ) {
     for mut text in text_query.iter_mut() {
-        text.sections[0].value = format!("{:03}", upgrades.get(Upgrade::ExtraLife));
+        text.sections[0].value = format!(" {:03}", upgrades.get(Upgrade::ExtraLife));
+    }
+}
+
+pub fn update_wave_counter(
+    mut text_query: Query<&mut Text, With<WaveTimerUi>>,
+    time: Res<WaveTimer>,
+) {
+    let minutes = (time.0 / 60.) as i32;
+    let seconds = time.0 as i32 % 60;
+    let millis = (time.0 * 100.).floor() % 100.;
+    for mut text in text_query.iter_mut() {
+        text.sections[0].value = format!("{minutes:02}:{seconds:02}");
+        text.sections[1].value = format!(":{millis:03}");
     }
 }
 

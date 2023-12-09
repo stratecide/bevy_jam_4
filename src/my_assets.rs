@@ -17,6 +17,8 @@ pub struct MyAssets {
     pub asteroids: Vec<Handle<Image>>,
     #[asset(path = "img/simple_enemy/enemyRed1.png")]
     pub simple_enemy: Handle<Image>,
+    #[asset(path = "img/simple_enemy/enemyRed4.png")]
+    pub simple_enemy2: Handle<Image>,
 
     #[asset(path = "img/star_silver.png")]
     pub exp: Handle<Image>,
