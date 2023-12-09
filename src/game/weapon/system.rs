@@ -9,6 +9,7 @@ use crate::game::enemy::component::*;
 use crate::game::enemy::resource::EnemyUpgrades;
 use crate::game::player::component::*;
 use crate::game::player::resource::Upgrades;
+use crate::game::resource::WaveTimer;
 use crate::my_assets::MyAssets;
 
 use super::Weapon;
@@ -51,6 +52,7 @@ pub fn tick_weapons<W: Weapon>(
     player_upgrades: Res<Upgrades>,
     enemy_upgrades: Res<EnemyUpgrades>,
     time: Res<Time>,
+    wave_timer: Res<WaveTimer>,
 ) {
     for (mut cooldown, weapon, transform, friendly) in weapon_query.iter_mut() {
         cooldown.cooldown -= time.delta_seconds();
@@ -61,7 +63,7 @@ pub fn tick_weapons<W: Weapon>(
                 &enemy_upgrades.0
             };
             cooldown.cooldown = 0.0_f32.max(cooldown.cooldown + weapon.max_cooldown(upgrades));
-            weapon.fire(&mut commands, transform, upgrades, friendly.is_some(), &assets);
+            weapon.fire(&mut commands, transform, upgrades, friendly.is_some(), &assets, &wave_timer);
         }
     }
 }

@@ -43,7 +43,7 @@ impl Plugin for GamePlugin {
         ).chain().run_if(in_state(GameState::Game).and_then(in_state(PauseState::Unpaused))))
         .add_systems(FixedUpdate, move_non_bullets.in_set(GameSystems::ShipMovement))
         .add_systems(FixedUpdate, fade_out.before(GameSystems::Collision))
-        .add_systems(FixedUpdate, tick_wave_timer.before(GameSystems::SpawnEnemy))
+        .add_systems(FixedUpdate, tick_wave_timer.in_set(GameSystems::SpawnEnemy))
         .add_systems(FixedUpdate, (
             level_up,
         ).run_if(in_state(GameState::Game).and_then(in_state(PauseState::Unpaused))))

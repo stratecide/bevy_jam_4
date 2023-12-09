@@ -2,7 +2,11 @@ use std::collections::HashMap;
 
 use bevy::prelude::*;
 
+use crate::my_assets::MyAssets;
+
 use super::enemy::resource::EnemyUpgrades;
+use super::enemy::resource::Waves;
+use super::player::component::Player;
 use super::player::component::Upgrade;
 use super::player::resource::Upgrades;
 use super::weapon::component::Bullet;
@@ -22,6 +26,7 @@ pub fn reset_resources(
     mut commands: Commands
 ) {
     commands.insert_resource(WaveTimer(0.));
+    commands.insert_resource(Waves::default());
     commands.insert_resource(Score(0));
     commands.insert_resource(Level(1));
     commands.insert_resource(Experience(0));
@@ -46,10 +51,18 @@ pub fn level_up(
 }
 
 pub fn tick_wave_timer(
+    mut commands: Commands,
+    player_query: Query<&Transform, With<Player>>,
     mut wave_timer: ResMut<WaveTimer>,
+    waves: Res<Waves>,
     timer: Res<Time>,
+    assets: Res<MyAssets>,
 ) {
+    let before = wave_timer.0;
     wave_timer.0 += timer.delta_seconds();
+    if let Ok(player) = player_query.get_single() {
+        waves.tick(before, wave_timer.0, &mut commands, player.translation.xy(), &assets);
+    }
 }
 
 pub fn move_non_bullets(
