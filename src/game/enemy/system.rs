@@ -20,14 +20,15 @@ pub fn despawn_dead(
             commands.entity(entity).despawn();
             if let Some(drops) = drops {
                 increase_score(&mut commands, drops.score, transform.translation.xy(), &mut score, &assets);
-                if drops.experience > 0 {
+                for drop in &drops.drops {
                     commands.spawn((
-                        Drop::Experience(drops.experience),
-                        SpriteBundle {
+                        drop.sprite(transform.translation.xy(), &assets),
+                        *drop,
+                        /*SpriteBundle {
                             transform: Transform::from_xyz(transform.translation.x, transform.translation.y, 0.).with_scale(Vec3::splat((drops.experience as f32 + 1.).ln())),
                             texture: assets.exp.clone(),
                             ..Default::default()
-                        },
+                        },*/
                     ));
                 }
             }

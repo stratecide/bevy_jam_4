@@ -4,6 +4,7 @@ use bevy::prelude::*;
 use rand::seq::SliceRandom;
 use rand::{Rng, thread_rng};
 
+use crate::game::drops::component::*;
 use crate::game::enemy::SPAWN_DISTANCE;
 use crate::game::enemy::component::*;
 use crate::game::player::component::Player;
@@ -37,6 +38,12 @@ pub fn spawn_asteroids(
             Enemy,
             Hp(rng.gen_range(1..=5)),
             Tumble::new(&mut rng),
+            Drops {
+                score: 0,
+                drops: vec![
+                    Drop::Coin,
+                ]
+            }
         ));
     }
 }

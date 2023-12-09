@@ -46,8 +46,10 @@ pub fn spawn_small_enemy(
             }),
             MainCannon::new(1, 3.),
             Drops {
-                experience: 1,
                 score: 50,
+                drops: vec![
+                    Drop::Experience(1),
+                ],
             },
         ));
     }
