@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use rand::{Rng, thread_rng};
 
 use crate::game::component::Velocity;
-use crate::game::drops::component::DropsExperience;
+use crate::game::drops::component::*;
 use crate::game::enemy::SPAWN_DISTANCE;
 use crate::game::enemy::component::*;
 use crate::game::player::PLAYER_SPEED;
@@ -45,7 +45,10 @@ pub fn spawn_small_enemy(
                 turnaround_distance: SPAWN_DISTANCE / 4.,
             }),
             MainCannon::new(1, 3.),
-            DropsExperience(1),
+            Drops {
+                experience: 1,
+                score: 50,
+            },
         ));
     }
 }

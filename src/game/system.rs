@@ -21,6 +21,7 @@ pub fn spawn_camera(
 pub fn reset_resources(
     mut commands: Commands
 ) {
+    commands.insert_resource(Score(0));
     commands.insert_resource(Level(1));
     commands.insert_resource(Experience(0));
     commands.insert_resource(AvailableUpgrades(0));
@@ -55,16 +56,23 @@ pub fn move_non_bullets(
 
 pub fn fade_out(
     mut commands: Commands,
-    mut query: Query<(Entity, &mut FadeAway, Option<&mut Sprite>)>,
+    mut query: Query<(Entity, &mut FadeAway, Option<&mut Sprite>, Option<&mut Text>)>,
     time: Res<Time>,
 ) {
     let dt = time.delta_seconds();
-    for (entity, mut fade_away, sprite) in query.iter_mut() {
+    for (entity, mut fade_away, sprite, text) in query.iter_mut() {
         fade_away.tick(dt);
         if fade_away.progress() >= 1. {
             commands.entity(entity).despawn();
-        } else if let Some(mut sprite) = sprite {
-            sprite.color.set_a(1. - fade_away.progress());
+        } else{
+            if let Some(mut sprite) = sprite {
+                sprite.color.set_a(1. - fade_away.progress());
+            }
+            if let Some(mut text) = text {
+                for section in &mut text.sections {
+                    section.style.color.set_a(1. - fade_away.progress());
+                }
+            }
         }
     }
 }

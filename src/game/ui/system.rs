@@ -30,7 +30,7 @@ pub fn setup_ui(
         parent.spawn(NodeBundle {
             style: Style {
                 width: Val::Percent(100.),
-                padding: UiRect::all(Val::Px(10.)),
+                padding: UiRect::all(Val::Px(8.)),
                 justify_content: JustifyContent::SpaceBetween,
                 align_items: AlignItems::Center,
                 ..Default::default()
@@ -38,10 +38,10 @@ pub fn setup_ui(
             ..Default::default()
         })
         .with_children(|parent| {
+            // lives
             parent.spawn((
                 NodeBundle {
                     style: Style {
-                        min_width: Val::Px(100.),
                         ..Default::default()
                     },
                     ..Default::default()
@@ -65,7 +65,7 @@ pub fn setup_ui(
                     TextBundle {
                         text: Text::from_section("3", TextStyle {
                             font: assets.font.clone(),
-                            font_size: 20.,
+                            font_size: 25.,
                             ..Default::default()
                         }),
                         style: Style {
@@ -75,6 +75,49 @@ pub fn setup_ui(
                     },
                     Label,
                     LifeCounter,
+                ));
+            });
+
+            // score
+            parent.spawn((
+                NodeBundle {
+                    style: Style {
+                        align_items: AlignItems::Center,
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                },
+            ))
+            .with_children(|parent| {
+                parent.spawn((
+                    TextBundle {
+                        text: Text::from_section("Score: ", TextStyle {
+                            font: assets.font.clone(),
+                            font_size: 16.,
+                            color: Color::rgb(0.8, 0.8, 0.8),
+                            ..Default::default()
+                        }),
+                        style: Style {
+                            ..Default::default()
+                        },
+                        ..Default::default()
+                    },
+                    Label,
+                ));
+                parent.spawn((
+                    TextBundle {
+                        text: Text::from_section("", TextStyle {
+                            font: assets.font.clone(),
+                            font_size: 25.,
+                            ..Default::default()
+                        }),
+                        style: Style {
+                            ..Default::default()
+                        },
+                        ..Default::default()
+                    },
+                    Label,
+                    ScoreCounter,
                 ));
             });
         });
@@ -164,6 +207,15 @@ pub fn update_life_counter(
 ) {
     for mut text in text_query.iter_mut() {
         text.sections[0].value = format!("{:03}", upgrades.get(Upgrade::ExtraLife));
+    }
+}
+
+pub fn update_score_counter(
+    mut text_query: Query<&mut Text, With<ScoreCounter>>,
+    score: Res<Score>,
+) {
+    for mut text in text_query.iter_mut() {
+        text.sections[0].value = format!("{:08}", score.0);
     }
 }
 

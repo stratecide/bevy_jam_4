@@ -1,31 +1,35 @@
 use bevy::prelude::*;
-use rand::thread_rng;
 
-use crate::game::component::*;
+use crate::game::{component::*, increase_score};
 use crate::game::drops::component::*;
 use crate::game::player::component::*;
 use crate::game::player::resource::Upgrades;
+use crate::game::resource::Score;
 use crate::my_assets::MyAssets;
 
 use super::component::*;
 
 pub fn despawn_dead(
     mut commands: Commands,
-    entity_query: Query<(Entity, &Hp, &Transform, Option<&DropsExperience>)>,
+    entity_query: Query<(Entity, &Hp, &Transform, Option<&Drops>)>,
     assets: Res<MyAssets>,
+    mut score: ResMut<Score>,
 ) {
-    for (entity, hp, transform, exp) in entity_query.iter() {
+    for (entity, hp, transform, drops) in entity_query.iter() {
         if hp.0 == 0 {
             commands.entity(entity).despawn();
-            if let Some(exp) = exp {
-                commands.spawn((
-                    Drop::Experience(exp.0),
-                    SpriteBundle {
-                        transform: Transform::from_xyz(transform.translation.x, transform.translation.y, 0.).with_scale(Vec3::splat((exp.0 as f32 + 1.).ln())),
-                        texture: assets.exp.clone(),
-                        ..Default::default()
-                    },
-                ));
+            if let Some(drops) = drops {
+                increase_score(&mut commands, drops.score, transform.translation.xy(), &mut score, &assets);
+                if drops.experience > 0 {
+                    commands.spawn((
+                        Drop::Experience(drops.experience),
+                        SpriteBundle {
+                            transform: Transform::from_xyz(transform.translation.x, transform.translation.y, 0.).with_scale(Vec3::splat((drops.experience as f32 + 1.).ln())),
+                            texture: assets.exp.clone(),
+                            ..Default::default()
+                        },
+                    ));
+                }
             }
         }
     }

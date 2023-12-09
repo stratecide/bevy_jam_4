@@ -8,3 +8,6 @@ pub struct UpgradeShop;
 
 #[derive(Component)]
 pub struct LifeCounter;
+
+#[derive(Component)]
+pub struct ScoreCounter;

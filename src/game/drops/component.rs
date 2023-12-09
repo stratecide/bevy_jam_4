@@ -1,7 +1,10 @@
 use bevy::prelude::*;
 
 #[derive(Component)]
-pub struct DropsExperience(pub usize);
+pub struct Drops {
+    pub experience: usize,
+    pub score: usize,
+}
 
 #[derive(Component)]
 pub enum Drop {

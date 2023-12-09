@@ -5,7 +5,7 @@ use rand::seq::SliceRandom;
 use rand::{Rng, thread_rng};
 
 use crate::game::enemy::SPAWN_DISTANCE;
-use crate::game::enemy::component::{Enemy, Hp};
+use crate::game::enemy::component::*;
 use crate::game::player::component::Player;
 use crate::my_assets::MyAssets;
 

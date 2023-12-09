@@ -6,11 +6,13 @@ pub mod ui;
 mod system;
 use system::*;
 pub mod component;
+use component::*;
 pub mod resource;
+use resource::*;
 
 use bevy::prelude::*;
 
-use crate::GameState;
+use crate::{GameState, my_assets::MyAssets};
 
 pub const ZOOM: f32 = 1.5;
 
@@ -72,4 +74,27 @@ pub fn despawn<T: Component>(
     for entity in entity_query.iter() {
         commands.entity(entity).despawn();
     }
+}
+
+pub fn increase_score(commands: &mut Commands, amount: usize, position: Vec2, score: &mut ResMut<Score>, assets: &Res<MyAssets>) {
+    if amount == 0 {
+        return;
+    }
+    score.0 += amount;
+    commands.spawn((
+        Text2dBundle {
+            text: Text::from_section(amount.to_string(), TextStyle {
+                font: assets.font.clone(),
+                font_size: 50.,
+                color: Color::GOLD,
+                ..Default::default()
+            }),
+            transform: Transform::from_xyz(position.x, position.y, 100.),
+            ..Default::default()
+        },
+        Velocity {
+            speed: Vec2::new(0., 50.),
+        },
+        FadeAway::new(0.4),
+    ));
 }

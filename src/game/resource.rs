@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 
 #[derive(Resource)]
+pub struct Score(pub usize);
+
+#[derive(Resource)]
 pub struct Experience(pub usize);
 
 #[derive(Resource)]
