@@ -20,8 +20,10 @@ impl Plugin for WeaponPlugin {
         ).in_set(GameSystems::Weapon))
         .add_systems(FixedUpdate, move_bullets
             .in_set(GameSystems::BulletMovement))
-        .add_systems(FixedUpdate, enemy_collisions
-            .in_set(GameSystems::Collision))
+        .add_systems(FixedUpdate, (
+            enemy_collisions,
+            player_collisions,
+        ).in_set(GameSystems::Collision))
         .add_systems(FixedUpdate, despawn_bullets
             .in_set(GameSystems::Despawn))
         .add_systems(OnExit(GameState::Game), (

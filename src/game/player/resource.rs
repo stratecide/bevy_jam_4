@@ -15,7 +15,7 @@ impl Upgrades {
     pub fn generate_options(&self) -> Vec<Upgrade> {
         // TODO
         vec![
-            Upgrade::MovementSpeed,
+            Upgrade::MainBulletCooldown,
             Upgrade::MainBulletCount,
         ]
     }

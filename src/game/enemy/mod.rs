@@ -12,7 +12,7 @@ use bevy::prelude::*;
 
 use super::{despawn, GameSystems, ZOOM};
 
-pub const SPAWN_DISTANCE: f32 = 1000. * ZOOM;
+pub const SPAWN_DISTANCE: f32 = 800. * ZOOM;
 
 #[derive(Debug)]
 pub struct EnemyPlugin;
@@ -27,7 +27,10 @@ impl Plugin for EnemyPlugin {
         ))
         .add_systems(FixedUpdate, update_enemy_velocity
             .in_set(GameSystems::UpdateVelocity))
-        .add_systems(FixedUpdate, despawn_dead.in_set(GameSystems::Despawn))
+        .add_systems(FixedUpdate, enemy_collisions
+            .in_set(GameSystems::Collision))
+        .add_systems(FixedUpdate, despawn_dead
+            .in_set(GameSystems::Despawn))
         ;
     }
 }

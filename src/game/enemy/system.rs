@@ -1,8 +1,10 @@
 use bevy::prelude::*;
+use rand::thread_rng;
 
 use crate::game::component::*;
 use crate::game::drops::component::*;
 use crate::game::player::component::*;
+use crate::game::player::resource::Upgrades;
 use crate::my_assets::MyAssets;
 
 use super::component::*;
@@ -49,6 +51,34 @@ pub fn update_enemy_velocity(
                     }
                     velocity.speed = velocity.speed.rotate(Vec2::from_angle(angle_diff));
                     transform.rotation = Quat::from_axis_angle(Vec3::Z, (-velocity.speed.x).atan2(velocity.speed.y));
+                }
+            }
+        }
+    }
+}
+
+pub fn enemy_collisions(
+    mut commands: Commands,
+    mut player_query: Query<(Entity, &mut Vulnerability, &Transform), With<PlayerFriend>>,
+    mut enemy_query: Query<(&mut Hp, &Transform, &Handle<Image>), (With<Enemy>, Without<PlayerFriend>)>,
+    images: Res<Assets<Image>>,
+    mut upgrades: ResMut<Upgrades>,
+) {
+    for (player, mut vulnerability, player_transform) in player_query.iter_mut() {
+        if !vulnerability.vulnerable() {
+            continue;
+        }
+        for (mut hp, enemy_transform, img) in enemy_query.iter_mut() {
+            if player_transform.translation.xy().distance(enemy_transform.translation.xy()) < 4. * player_transform.scale.x + images.get(img).unwrap().height() as f32 * 0.4 * enemy_transform.scale.x {
+                // enemy damage
+                hp.0 = 1.max(hp.0) - 1;
+                // player damage
+                let lives = upgrades.get(Upgrade::ExtraLife);
+                vulnerability.reset();
+                if lives > 0 {
+                    upgrades.0.insert(Upgrade::ExtraLife, lives - 1);
+                } else {
+                    commands.entity(player).despawn();
                 }
             }
         }

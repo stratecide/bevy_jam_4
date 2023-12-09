@@ -4,12 +4,13 @@ use bevy::prelude::*;
 use bevy::audio::*;
 
 use crate::game::component::Velocity;
+use crate::game::player::component::MAIN_WEAPON_COOLDOWN_REDUCTION;
 use crate::game::player::component::Upgrade;
 use crate::my_assets::MyAssets;
 use crate::game::player::component::PlayerFriend;
 
 pub trait Weapon: Component {
-    fn max_cooldown(&self) -> f32;
+    fn max_cooldown(&self, upgrades: &HashMap<Upgrade, usize>) -> f32;
     fn fire(&self, commands: &mut Commands, entity_transform: &Transform, upgrades: &HashMap<Upgrade, usize>, friendly: bool, assets: &Res<MyAssets>);
 }
 
@@ -35,8 +36,8 @@ impl MainCannon {
 }
 
 impl Weapon for MainCannon {
-    fn max_cooldown(&self) -> f32 {
-        self.cooldown
+    fn max_cooldown(&self, upgrades: &HashMap<Upgrade, usize>) -> f32 {
+        self.cooldown * (1. - MAIN_WEAPON_COOLDOWN_REDUCTION).powi(upgrades.get(&Upgrade::MainBulletCooldown).cloned().unwrap_or(0) as i32)
     }
     
     fn fire(&self, commands: &mut Commands, entity_transform: &Transform, upgrades: &HashMap<Upgrade, usize>, friendly: bool, assets: &Res<MyAssets>) {

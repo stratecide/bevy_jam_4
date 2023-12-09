@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use bevy::prelude::*;
 
 use super::enemy::resource::EnemyUpgrades;
+use super::player::component::Upgrade;
 use super::player::resource::Upgrades;
 use super::weapon::component::Bullet;
 use super::resource::*;
@@ -23,7 +24,10 @@ pub fn reset_resources(
     commands.insert_resource(Level(1));
     commands.insert_resource(Experience(0));
     commands.insert_resource(AvailableUpgrades(0));
-    commands.insert_resource(Upgrades(HashMap::new()));
+    let mut player_upgrades = HashMap::new();
+    player_upgrades.insert(Upgrade::MainBulletCount, 1);
+    player_upgrades.insert(Upgrade::ExtraLife, 3);
+    commands.insert_resource(Upgrades(player_upgrades));
     commands.insert_resource(EnemyUpgrades(HashMap::new()));
 }
 

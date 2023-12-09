@@ -13,6 +13,7 @@ const SHOP_OPTION_BORDER_HOVERED: Color = Color::rgb(1., 1., 1.);
 pub fn setup_ui(
     mut commands: Commands,
     assets: Res<MyAssets>,
+    images: Res<Assets<Image>>,
 ) {
     commands.spawn(NodeBundle {
         style: Style {
@@ -28,9 +29,54 @@ pub fn setup_ui(
         // top ui
         parent.spawn(NodeBundle {
             style: Style {
+                width: Val::Percent(100.),
+                padding: UiRect::all(Val::Px(10.)),
+                justify_content: JustifyContent::SpaceBetween,
+                align_items: AlignItems::Center,
                 ..Default::default()
             },
             ..Default::default()
+        })
+        .with_children(|parent| {
+            parent.spawn((
+                NodeBundle {
+                    style: Style {
+                        min_width: Val::Px(100.),
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                },
+            ))
+            .with_children(|parent| {
+                let life_icon = images.get(&assets.life_icon).unwrap();
+                parent.spawn((
+                    NodeBundle {
+                        style: Style {
+                            width: Val::Px(life_icon.width() as f32),
+                            height: Val::Px(life_icon.height() as f32),
+                            ..Default::default()
+                        },
+                        background_color: Color::WHITE.into(),
+                        ..Default::default()
+                    },
+                    UiImage::new(assets.life_icon.clone()),
+                ));
+                parent.spawn((
+                    TextBundle {
+                        text: Text::from_section("3", TextStyle {
+                            font: assets.font.clone(),
+                            font_size: 20.,
+                            ..Default::default()
+                        }),
+                        style: Style {
+                            ..Default::default()
+                        },
+                        ..Default::default()
+                    },
+                    Label,
+                    LifeCounter,
+                ));
+            });
         });
 
         // bottom ui
@@ -109,6 +155,15 @@ pub fn update_expbar(
 ) {
     for mut style in expbar_query.iter_mut() {
         style.width = Val::Percent(100. - 100. * experience.0 as f32 / level.exp_needed_for_next_level() as f32);
+    }
+}
+
+pub fn update_life_counter(
+    mut text_query: Query<&mut Text, With<LifeCounter>>,
+    upgrades: Res<Upgrades>,
+) {
+    for mut text in text_query.iter_mut() {
+        text.sections[0].value = format!("{:03}", upgrades.get(Upgrade::ExtraLife));
     }
 }
 

@@ -17,7 +17,8 @@ pub fn spawn_player(
         },
         Player {},
         PlayerFriend,
-        MainCannon::new(1, 0.3),
+        MainCannon::new(0, 0.3),
+        Vulnerability::new(),
     ));
 }
 
@@ -75,6 +76,20 @@ pub fn update_camera(
             let scale = ZOOM / (window.width() * window.height() / 1_000_000.).sqrt();
             camera_transform.scale.x = scale;
             camera_transform.scale.y = camera_transform.scale.x;
+        }
+    }
+}
+
+pub fn tick_vulnerability(
+    mut player_query: Query<(&mut Vulnerability, &mut Sprite), With<Player>>,
+    time: Res<Time>,
+) {
+    for (mut vulnerability, mut sprite) in player_query.iter_mut() {
+        vulnerability.tick(time.delta_seconds());
+        if vulnerability.vulnerable() {
+            sprite.color = Color::WHITE;
+        } else {
+            sprite.color.set_a((vulnerability.remaining_seconds() * 20.).sin() * 0.5 + 0.5);
         }
     }
 }

@@ -26,4 +26,6 @@ pub struct MyAssets {
 
     #[asset(path = "kenvector_future_thin.ttf")]
     pub font: Handle<Font>,
+    #[asset(path = "img/playerLife1_green.png")]
+    pub life_icon: Handle<Image>,
 }
