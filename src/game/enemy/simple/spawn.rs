@@ -88,6 +88,7 @@ pub fn spawn_red4(
     if let Some(drop) = bonus_drop.take() {
         drops.push(drop);
     }
+    // 4, 15, 28, 43, 60, 79
     let hp = 4 + (10 + difficulty) * difficulty;
     let speed_modifier = 1. + difficulty as f32 / 3.;
     commands.spawn((
@@ -109,7 +110,7 @@ pub fn spawn_red4(
             max_speed: PLAYER_SPEED * 0.5 * speed_modifier,
             target_distance: thread_rng().gen_range(300.0..400.0),
         }),
-        StarCannon::new(2 + difficulty, 1. + 6. / (2. + difficulty as f32)),
+        StarCannon::new(2 + difficulty * 2, 1. + 3. / (1. + difficulty as f32 / 2.)),
         Drops {
             score: 75,
             drops,

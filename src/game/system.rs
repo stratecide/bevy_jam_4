@@ -33,7 +33,7 @@ pub fn reset_resources(
     commands.insert_resource(Experience(0));
     commands.insert_resource(AvailableUpgrades(0));
     let mut player_upgrades = HashMap::new();
-    player_upgrades.insert(Upgrade::MainBulletCount, 1);
+    player_upgrades.insert(Upgrade::MainBulletCount, 2);
     player_upgrades.insert(Upgrade::ExtraLife, 3);
     commands.insert_resource(Upgrades(player_upgrades));
     commands.insert_resource(EnemyUpgrades(HashMap::new()));
