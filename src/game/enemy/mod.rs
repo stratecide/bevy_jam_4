@@ -1,5 +1,6 @@
 pub mod asteroid;
 pub mod simple;
+pub mod boss;
 pub mod component;
 pub mod resource;
 mod system;

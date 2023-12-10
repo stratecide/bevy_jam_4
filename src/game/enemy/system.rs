@@ -57,6 +57,7 @@ pub fn update_enemy_velocity(
                     }
                     velocity.speed = velocity.speed.rotate(Vec2::from_angle(angle_diff));
                 }
+                transform.rotation = Quat::from_axis_angle(Vec3::Z, (-velocity.speed.x).atan2(velocity.speed.y));
             }
             MovementPattern::KeepDistance(data) => {
                 let distance = player.translation.xy() - transform.translation.xy();
@@ -73,9 +74,19 @@ pub fn update_enemy_velocity(
                     let wave = dir.x.atan2(-dir.y) + wave_timer.0 / 10.;
                     velocity.speed += max_sideways * wave.sin() * Vec2::new(dir.y, -dir.x);
                 }
+                transform.rotation = Quat::from_axis_angle(Vec3::Z, (-velocity.speed.x).atan2(velocity.speed.y));
+            }
+            MovementPattern::Hover(data) => {
+                let distance = player.translation.xy() - transform.translation.xy();
+                transform.rotation = Quat::from_axis_angle(Vec3::Z, (-distance.x).atan2(distance.y));
+                if distance.length() <= data.target_distance {
+                    velocity.speed *= 0.;
+                } else if (distance.length() - data.target_distance) < velocity.speed.length() * time.delta_seconds() {
+                    let speed = velocity.speed.length() * time.delta_seconds();
+                    velocity.speed *= (distance.length() - data.target_distance) / speed;
+                };
             }
         }
-        transform.rotation = Quat::from_axis_angle(Vec3::Z, (-velocity.speed.x).atan2(velocity.speed.y));
     }
 }
 

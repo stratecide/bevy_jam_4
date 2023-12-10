@@ -11,6 +11,9 @@ pub struct Player;
 pub struct PlayerFriend;
 
 #[derive(Component)]
+pub struct PlayerMovement;
+
+#[derive(Component)]
 pub struct Vulnerability(f32);
 
 impl Vulnerability {

@@ -6,6 +6,7 @@ use crate::game::drops::component::Drop;
 use crate::game::player::component::Upgrade;
 use crate::my_assets::MyAssets;
 
+use super::boss::spawn::*;
 use super::simple::spawn::*;
 use super::asteroid::*;
 
@@ -82,7 +83,7 @@ impl Waves {
             });
         }
         result.add_wave(12., |difficulty, commands, center, assets| {
-            spawn_red4_ring(commands, center, assets, difficulty, 6 + difficulty * 2, Some(Drop::Vacuum));
+            spawn_red4_ring(commands, center, assets, difficulty, 6 + difficulty * 2, None);
         });
 
         result.add_wave(0., |_difficulty, commands, center, assets| {
@@ -112,6 +113,40 @@ impl Waves {
         result.add_wave(4., |_difficulty, commands, center, assets| {
             spawn_debris(commands, center, assets, Drop::Vacuum, 0);
         });
+        result.add_wave(20., |difficulty, commands, center, assets| {
+            spawn_boss_simple(commands, center, assets, difficulty);
+        });
+
+        result.add_wave(0., |_difficulty, commands, center, assets| {
+            spawn_debris(commands, center, assets, Drop::Coin, 1);
+        });
+        for _ in 0..5 {
+            result.add_wave(1., |difficulty, commands, center, assets| {
+                spawn_red4_squad(commands, center, assets, difficulty, 0, None);
+            });
+            result.add_wave(1., |difficulty, commands, center, assets| {
+                spawn_red1_squad(commands, center, assets, difficulty, 0, None);
+            });
+        }
+        for _ in 0..5 {
+            result.add_wave(2., |difficulty, commands, center, assets| {
+                spawn_red4_ring(commands, center, assets, difficulty, 3, None);
+            });
+            result.add_wave(2., |difficulty, commands, center, assets| {
+                spawn_red1_squad(commands, center, assets, difficulty, 1, None);
+            });
+        }
+
+        result.add_wave(4., |_difficulty, commands, center, assets| {
+            spawn_debris(commands, center, assets, Drop::Coin, 0);
+        });
+        result.add_wave(30., |difficulty, commands, center, assets| {
+            for _ in 0..(2 + difficulty) {
+                spawn_boss_simple(commands, center, assets, difficulty);
+            }
+        });
+
+        // TODO: show info that difficulty is being increased
         result
     }
 }

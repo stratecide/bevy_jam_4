@@ -25,7 +25,8 @@ impl Plugin for PlayerPlugin {
             despawn::<Player>,
         ))
         .add_systems(FixedUpdate, (
-            player_input,
+            player_wasd,
+            player_cursor,
             update_camera,
             tick_vulnerability,
         ).in_set(GameSystems::ShipMovement).chain())

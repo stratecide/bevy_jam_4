@@ -18,7 +18,10 @@ impl Plugin for WeaponPlugin {
         .add_systems(FixedUpdate, (
             tick_weapons::<MainCannon>,
             tick_weapons::<StarCannon>,
+            tick_spiral_cannon,
         ).in_set(GameSystems::Weapon))
+        .add_systems(FixedUpdate, accelerate_bullets
+            .in_set(GameSystems::UpdateVelocity))
         .add_systems(FixedUpdate, move_bullets
             .in_set(GameSystems::BulletMovement))
         .add_systems(FixedUpdate, (

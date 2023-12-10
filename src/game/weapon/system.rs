@@ -52,7 +52,6 @@ pub fn tick_weapons<W: Weapon>(
     player_upgrades: Res<Upgrades>,
     enemy_upgrades: Res<EnemyUpgrades>,
     time: Res<Time>,
-    wave_timer: Res<WaveTimer>,
 ) {
     for (mut cooldown, weapon, transform, friendly) in weapon_query.iter_mut() {
         cooldown.cooldown -= time.delta_seconds();
@@ -63,8 +62,33 @@ pub fn tick_weapons<W: Weapon>(
                 &enemy_upgrades.0
             };
             cooldown.cooldown = 0.0_f32.max(cooldown.cooldown + weapon.max_cooldown(upgrades));
-            weapon.fire(&mut commands, transform, upgrades, friendly.is_some(), &assets, &wave_timer);
+            weapon.fire(&mut commands, transform, upgrades, friendly.is_some(), &assets);
         }
+    }
+}
+
+pub fn tick_spiral_cannon(
+    mut commands: Commands,
+    mut weapon_query: Query<(&mut SpiralCannonCooldown, &SpiralCannon, &Transform, Option<&PlayerFriend>)>,
+    assets: Res<MyAssets>,
+    time: Res<Time>,
+    wave_timer: Res<WaveTimer>,
+) {
+    for (mut cooldown, weapon, transform, friendly) in weapon_query.iter_mut() {
+        cooldown.cooldown -= time.delta_seconds();
+        if cooldown.cooldown <= 0. {
+            weapon.fire(&mut commands, transform, friendly.is_some(), &assets, &wave_timer, &mut cooldown);
+        }
+    }
+}
+
+pub fn accelerate_bullets(
+    mut bullet_query: Query<&mut Velocity, With<Bullet>>,
+    time: Res<Time>,
+) {
+    for mut velocity in bullet_query.iter_mut() {
+        let normal = velocity.speed.normalize();
+        velocity.speed += normal * time.delta_seconds() * 30.;
     }
 }
 

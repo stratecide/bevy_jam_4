@@ -4,6 +4,7 @@ use bevy::prelude::*;
 
 use crate::my_assets::MyAssets;
 
+use super::enemy::SPAWN_DISTANCE;
 use super::enemy::resource::EnemyUpgrades;
 use super::enemy::resource::Waves;
 use super::player::component::Player;
@@ -66,12 +67,22 @@ pub fn tick_wave_timer(
 }
 
 pub fn move_non_bullets(
-    mut query: Query<(&mut Transform, &Velocity), Without<Bullet>>,
+    mut query: Query<(&mut Transform, &Velocity), (Without<Bullet>, Without<Player>)>,
+    player_query: Query<&GlobalTransform, With<Player>>,
     time: Res<Time>,
 ) {
     for (mut transform, velocity) in query.iter_mut() {
         transform.translation.x += velocity.speed.x * time.delta_seconds();
         transform.translation.y += velocity.speed.y * time.delta_seconds();
+        if let Ok(player) = player_query.get_single() {
+            let player_translation = player.translation().xy();
+            let dir = player_translation - transform.translation.xy();
+            if dir.length() > 2. * SPAWN_DISTANCE {
+                let dir = dir.normalize();
+                transform.translation.x += dir.x * 1. * SPAWN_DISTANCE;
+                transform.translation.y += dir.y * 1. * SPAWN_DISTANCE;
+            }
+        }
     }
 }
 

@@ -17,38 +17,45 @@ pub fn spawn_player(
         },
         Player {},
         PlayerFriend,
+        PlayerMovement,
         MainCannon::new(0, 0.3),
         Vulnerability::new(),
     ));
 }
 
-pub fn player_input(
-    mut player_query: Query<&mut Transform, With<Player>>,
-    camera_query: Query<(&Camera, &GlobalTransform), Without<Player>>,
-    cursor_query: Query<&Window, With<PrimaryWindow>>,
+pub fn player_wasd(
+    mut player_query: Query<&mut Transform, With<PlayerMovement>>,
     input: Res<Input<KeyCode>>,
     time: Res<Time>,
     upgrades: Res<Upgrades>,
 ) {
-    if let Ok(mut transform) = player_query.get_single_mut() {
-        let mut dir = Vec3::ZERO;
-        if input.pressed(KeyCode::W) {
-            dir.y += 1.;
-        }
-        if input.pressed(KeyCode::A) {
-            dir.x -= 1.;
-        }
-        if input.pressed(KeyCode::S) {
-            dir.y -= 1.;
-        }
-        if input.pressed(KeyCode::D) {
-            dir.x += 1.;
-        }
+    let mut dir = Vec3::ZERO;
+    if input.pressed(KeyCode::W) {
+        dir.y += 1.;
+    }
+    if input.pressed(KeyCode::A) {
+        dir.x -= 1.;
+    }
+    if input.pressed(KeyCode::S) {
+        dir.y -= 1.;
+    }
+    if input.pressed(KeyCode::D) {
+        dir.x += 1.;
+    }
 
-        if dir != Vec3::ZERO {
+    if dir != Vec3::ZERO {
+        for mut transform in player_query.iter_mut() {
             transform.translation += dir.normalize() * PLAYER_SPEED * time.delta_seconds() * (1. + upgrades.get(Upgrade::MovementSpeed) as f32 * MOVEMENT_SPEED_BONUS);
         }
-        
+    }
+}
+
+pub fn player_cursor(
+    mut player_query: Query<&mut Transform, With<Player>>,
+    camera_query: Query<(&Camera, &GlobalTransform), Without<Player>>,
+    cursor_query: Query<&Window, With<PrimaryWindow>>,
+) {
+    if let Ok(mut transform) = player_query.get_single_mut() {
         if let Ok((camera, camera_global_transform)) = camera_query.get_single() {
             if let Some(cursor) = cursor_query.get_single().ok()
             .and_then(|w| w.cursor_position())

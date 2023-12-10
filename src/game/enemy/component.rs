@@ -10,6 +10,7 @@ pub struct Hp(pub usize);
 pub enum MovementPattern {
     StraightApproach(StraightApproach),
     KeepDistance(KeepDistance),
+    Hover(Hover),
 }
 
 pub struct StraightApproach {
@@ -20,4 +21,9 @@ pub struct StraightApproach {
 pub struct KeepDistance {
     pub max_speed: f32,
     pub target_distance: f32,
+}
+
+pub struct Hover {
+    pub target_distance: f32,
+    pub angular_speed: f32,
 }

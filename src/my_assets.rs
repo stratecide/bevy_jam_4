@@ -19,6 +19,8 @@ pub struct MyAssets {
     pub simple_enemy: Handle<Image>,
     #[asset(path = "img/simple_enemy/enemyRed4.png")]
     pub simple_enemy2: Handle<Image>,
+    #[asset(path = "img/boss.png")]
+    pub boss: Handle<Image>,
 
     #[asset(path = "img/star_silver.png")]
     pub exp: Handle<Image>,
