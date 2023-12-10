@@ -42,9 +42,21 @@ pub enum Upgrade {
     MainBulletCooldown,
     StarBulletCount,
     StarBulletCooldown,
+    SpiralBulletCount,
+    SpiralBulletCooldown,
 }
 
 impl Upgrade {
+    pub fn unlock_title(&self) -> Option<&'static str> {
+        Some(match self {
+            Self::MainBulletCount => "Unlock Main Cannon",
+            Self::StarBulletCount => "Unlock Star Cannon",
+            Self::SpiralBulletCount => "Unlock Spiral Cannon",
+            _ => return None,
+        })
+    }
+
+
     pub fn title(&self) -> &'static str {
         match self {
             Self::ExtraLife => "Extra Life",
@@ -53,7 +65,18 @@ impl Upgrade {
             Self::MainBulletCooldown => "Weapon Cooldown (Main)",
             Self::StarBulletCount => "Extra Bullet (Star)",
             Self::StarBulletCooldown => "Weapon Cooldown (Star)",
+            Self::SpiralBulletCount => "Extra Bullet (Spiral)",
+            Self::SpiralBulletCooldown => "Weapon Cooldown (Spiral)",
         }
+    }
+
+    pub fn unlock_description(&self) -> Option<String> {
+        Some(match self {
+            Self::MainBulletCount => "Shoots 1 bullet toward the mouse cursor",
+            Self::StarBulletCount => "Shoots 2 bullets in random directions",
+            Self::SpiralBulletCount => "A UFO will circle you, shooting bullets in a spiral pattern",
+            _ => return None,
+        }.to_string())
     }
 
     pub fn description(&self) -> String {
@@ -64,6 +87,16 @@ impl Upgrade {
             Self::MainBulletCooldown => format!("Reduces the cooldown of your main weapon by {}% (multiplicative)", (MAIN_WEAPON_COOLDOWN_REDUCTION * 100.).round()),
             Self::StarBulletCount => format!("You shoot one additional bullet when you shoot using your Star weapon"),
             Self::StarBulletCooldown => format!("Reduces the cooldown of your Star weapon by {}% (multiplicative)", (MAIN_WEAPON_COOLDOWN_REDUCTION * 100.).round()),
+            Self::SpiralBulletCount => format!("You shoot one additional bullet when you shoot using your Spiral weapon"),
+            Self::SpiralBulletCooldown => format!("Reduces the cooldown of your Spiral weapon by {}% (multiplicative)", (MAIN_WEAPON_COOLDOWN_REDUCTION * 100.).round()),
+        }
+    }
+
+    pub fn max(&self) -> Option<usize> {
+        match self {
+            Self::MovementSpeed => Some(5),
+            Self::ExtraLife => Some(9),
+            _ => Some(8),
         }
     }
 }

@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 
-use crate::{my_assets::MyAssets, game::{weapon::component::MainCannon, ZOOM}};
+use crate::{my_assets::MyAssets, game::{weapon::component::*, ZOOM}};
 
 use super::{component::*, PLAYER_SPEED, resource::Upgrades};
 
@@ -19,6 +19,8 @@ pub fn spawn_player(
         PlayerFriend,
         PlayerMovement,
         MainCannon::new(0, 0.3),
+        StarCannon::new(0, 1.),
+        //SpiralCannon::new(0, 1., 1., 0, vec![(Vec2::splat(0.), false)]),
         Vulnerability::new(),
     ));
 }

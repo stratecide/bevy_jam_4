@@ -279,16 +279,20 @@ pub fn open_shop(
     if available_upgrades.0 == 0 || !shop_query.is_empty() {
         return;
     }
-    pause_state.set(PauseState::Shop);
-    _open_shop(&upgrades, commands, &assets);
+    if _open_shop(&upgrades, commands, &assets) {
+        pause_state.set(PauseState::Shop);
+    }
 }
 
 fn _open_shop(
     upgrades: &Upgrades,
     mut commands: Commands,
     assets: &MyAssets,
-) {
+) -> bool {
     let options = upgrades.generate_options();
+    if options.len() == 0 {
+        return false;
+    }
     commands.spawn((
         NodeBundle {
             style: Style {
@@ -357,9 +361,16 @@ fn _open_shop(
                         option,
                     ))
                     .with_children(|parent| {
+                        let (title, description) = if upgrades.get(option) == 0 {
+                            (option.unlock_title(), option.unlock_description())
+                        } else {
+                            (None, None)
+                        };
+                        let title = title.unwrap_or(option.title());
+                        let description = description.unwrap_or(option.description());
                         parent.spawn((
                             TextBundle {
-                                text: Text::from_section(option.title(), TextStyle {
+                                text: Text::from_section(title, TextStyle {
                                     font: assets.font.clone(),
                                     font_size: 40.,
                                     ..Default::default()
@@ -374,7 +385,7 @@ fn _open_shop(
                         ));
                         parent.spawn((
                             TextBundle {
-                                text: Text::from_section(option.description(), TextStyle {
+                                text: Text::from_section(description, TextStyle {
                                     font: assets.font.clone(),
                                     font_size: 20.,
                                     ..Default::default()
@@ -388,6 +399,7 @@ fn _open_shop(
             });
         });
     });
+    true
 }
 
 pub fn update_shop(
@@ -410,9 +422,7 @@ pub fn update_shop(
                 upgrades.0.insert(*option, new_level);
                 // rebuild shop or close it
                 commands.entity(shop_query.single()).despawn_recursive();
-                if available_upgrades.0 > 0 {
-                    _open_shop(&upgrades, commands, &assets);
-                } else {
+                if available_upgrades.0 == 0 || !_open_shop(&upgrades, commands, &assets) {
                     pause_state.set(PauseState::Unpaused);
                 }
                 return;

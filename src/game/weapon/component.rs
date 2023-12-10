@@ -121,7 +121,7 @@ impl Weapon for StarCannon {
         } else {
             (&assets.enemy_bullet, 300.)
         };
-        let bullet_count = self.bullets + upgrades.get(&Upgrade::StarBulletCount).cloned().unwrap_or(0);
+        let bullet_count = self.bullets + upgrades.get(&Upgrade::StarBulletCount).cloned().unwrap_or(0) * 2;
         for i in 0..bullet_count {
             let angle = angle + i as f32 * 2. * PI / bullet_count as f32;
             let forward = Vec2::from_angle(angle);
@@ -164,7 +164,7 @@ pub struct SpiralCannon {
     cooldown: f32,
     long_cooldown: f32,
     shots_before_long_cooldown: usize,
-    offsets: Vec<(Vec2, bool)>,
+    pub offsets: Vec<(Vec2, bool)>,
 }
 
 #[derive(Component)]
@@ -190,7 +190,7 @@ impl SpiralCannon {
         )
     }
 
-    pub fn fire(&self, commands: &mut Commands, entity_transform: &Transform, friendly: bool, assets: &MyAssets, time: &WaveTimer, cooldown: &mut SpiralCannonCooldown) {
+    pub fn fire(&self, commands: &mut Commands, entity_transform: &Transform, upgrades: &HashMap<Upgrade, usize>, friendly: bool, assets: &MyAssets, time: &WaveTimer, cooldown: &mut SpiralCannonCooldown) {
         let angle = time.0 / 2.3;
         let own_angle = entity_transform.rotation.to_axis_angle().1;
         let (texture, bullet_speed) = if friendly {
@@ -198,7 +198,7 @@ impl SpiralCannon {
         } else {
             (&assets.enemy_bullet, 300.)
         };
-        let bullet_count = self.bullets;
+        let bullet_count = self.bullets + upgrades.get(&Upgrade::SpiralBulletCount).cloned().unwrap_or(0);
         for (offset, flipped) in &self.offsets {
             let angle = if *flipped {
                 -angle
@@ -247,6 +247,7 @@ impl SpiralCannon {
             cooldown.cooldown += self.cooldown;
             cooldown.shots_before_long_cooldown -= 1;
         }
+        cooldown.cooldown *= (1. - MAIN_WEAPON_COOLDOWN_REDUCTION).powi(upgrades.get(&Upgrade::SpiralBulletCooldown).cloned().unwrap_or(0) as i32);
     }
 }
 

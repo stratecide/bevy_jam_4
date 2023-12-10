@@ -72,12 +72,19 @@ pub fn tick_spiral_cannon(
     mut weapon_query: Query<(&mut SpiralCannonCooldown, &SpiralCannon, &Transform, Option<&PlayerFriend>)>,
     assets: Res<MyAssets>,
     time: Res<Time>,
+    player_upgrades: Res<Upgrades>,
+    enemy_upgrades: Res<EnemyUpgrades>,
     wave_timer: Res<WaveTimer>,
 ) {
     for (mut cooldown, weapon, transform, friendly) in weapon_query.iter_mut() {
         cooldown.cooldown -= time.delta_seconds();
         if cooldown.cooldown <= 0. {
-            weapon.fire(&mut commands, transform, friendly.is_some(), &assets, &wave_timer, &mut cooldown);
+            let upgrades = if friendly.is_some() {
+                &player_upgrades.0
+            } else {
+                &enemy_upgrades.0
+            };
+            weapon.fire(&mut commands, transform, upgrades, friendly.is_some(), &assets, &wave_timer, &mut cooldown);
         }
     }
 }
