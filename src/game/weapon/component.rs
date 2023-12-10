@@ -191,14 +191,14 @@ impl SpiralCannon {
     }
 
     pub fn fire(&self, commands: &mut Commands, entity_transform: &Transform, upgrades: &HashMap<Upgrade, usize>, friendly: bool, assets: &MyAssets, time: &WaveTimer, cooldown: &mut SpiralCannonCooldown) {
-        let angle = time.0 / 2.3;
+        let angle = time.0;
         let own_angle = entity_transform.rotation.to_axis_angle().1;
         let (texture, bullet_speed) = if friendly {
             (&assets.player_bullet, 1000.)
         } else {
             (&assets.enemy_bullet, 300.)
         };
-        let bullet_count = self.bullets + upgrades.get(&Upgrade::SpiralBulletCount).cloned().unwrap_or(0);
+        let bullet_count = self.bullets + upgrades.get(&Upgrade::SpiralBulletCount).cloned().unwrap_or(0) * 2;
         for (offset, flipped) in &self.offsets {
             let angle = if *flipped {
                 -angle

@@ -79,6 +79,7 @@ pub fn update_enemy_velocity(
             MovementPattern::Hover(data) => {
                 let distance = player.translation.xy() - transform.translation.xy();
                 transform.rotation = Quat::from_axis_angle(Vec3::Z, (-distance.x).atan2(distance.y));
+                velocity.speed = velocity.speed.length() * distance.normalize();
                 if distance.length() <= data.target_distance {
                     velocity.speed *= 0.;
                 } else if (distance.length() - data.target_distance) < velocity.speed.length() * time.delta_seconds() {

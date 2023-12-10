@@ -10,6 +10,7 @@ use crate::game::enemy::SPAWN_DISTANCE;
 use crate::game::enemy::component::*;
 use crate::game::player::PLAYER_SPEED;
 use crate::game::player::component::PlayerMovement;
+use crate::game::player::component::PlayerSatellite;
 use crate::game::weapon::component::*;
 use crate::my_assets::MyAssets;
 
@@ -42,13 +43,14 @@ pub fn spawn_boss(
         },
         Enemy,
         PlayerMovement,
+        PlayerSatellite(thread_rng().gen_range(-0.4..=0.4)),
         Hp(hp),
         Velocity {
             speed: Vec2::new(-angle.cos(), -angle.sin()) * PLAYER_SPEED * 0.3 * speed_modifier,
         },
         MovementPattern::Hover(Hover {
             angular_speed: thread_rng().gen_range(-(PI / 10.)..=(PI / 10.)),
-            target_distance: SPAWN_DISTANCE / 4.,
+            target_distance: SPAWN_DISTANCE / 3.,
         }),
         MainCannon::new(3, 8. / (4. + difficulty as f32)),
         SpiralCannon::new(3 + difficulty * 2, 1. / 4., 2., 4 + difficulty * 2, vec![

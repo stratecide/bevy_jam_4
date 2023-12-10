@@ -28,6 +28,8 @@ impl Plugin for PlayerPlugin {
             player_wasd,
             player_cursor,
             update_camera,
+            player_satellite,
+            make_player_satellite_visible,
             tick_vulnerability,
         ).in_set(GameSystems::ShipMovement).chain())
         ;

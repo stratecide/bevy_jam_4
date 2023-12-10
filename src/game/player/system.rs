@@ -20,8 +20,22 @@ pub fn spawn_player(
         PlayerMovement,
         MainCannon::new(0, 0.3),
         StarCannon::new(0, 1.),
-        //SpiralCannon::new(0, 1., 1., 0, vec![(Vec2::splat(0.), false)]),
         Vulnerability::new(),
+    ));
+    commands.spawn((
+        SpriteBundle {
+            transform: Transform::from_xyz(250., 0., 20.).with_scale(Vec3::splat(0.5)),
+            texture: assets.ufo.clone(),
+            sprite: Sprite {
+                color: Color::rgba(1., 1., 1., 0.),
+                ..Default::default()
+            },
+            ..Default::default()
+        },
+        PlayerFriend,
+        PlayerMovement,
+        PlayerSatellite(-0.5),
+        SpiralCannon::new(0, 1., 0.3, 0, vec![(Vec2::splat(0.), false)]),
     ));
 }
 
@@ -85,6 +99,35 @@ pub fn update_camera(
             let scale = ZOOM / (window.width() * window.height() / 1_000_000.).sqrt();
             camera_transform.scale.x = scale;
             camera_transform.scale.y = camera_transform.scale.x;
+        }
+    }
+}
+
+pub fn player_satellite(
+    player_query: Query<&Transform, (With<Camera>, Without<PlayerSatellite>)>,
+    mut satellite_query: Query<(&mut Transform, &PlayerSatellite)>,
+    time: Res<Time>,
+) {
+    if let Ok(center) = player_query.get_single() {
+        for (mut transform, sat) in satellite_query.iter_mut() {
+            let distance = center.translation.xy() - transform.translation.xy();
+            let angle = distance.y.atan2(distance.x);
+            let destination = center.translation.xy() - Vec2::from_angle(angle + sat.0 * time.delta_seconds()) * distance.length();
+            transform.translation.x = destination.x;
+            transform.translation.y = destination.y;
+        }
+    }
+}
+
+pub fn make_player_satellite_visible(
+    mut satellite_query: Query<&mut Sprite, (With<PlayerSatellite>, With<PlayerFriend>)>,
+    time: Res<Time>,
+    upgrades: Res<Upgrades>,
+) {
+    if upgrades.get(Upgrade::SpiralBulletCount) > 0 {
+        for mut sprite in satellite_query.iter_mut() {
+            let alpha = sprite.color.a() + time.delta_seconds();
+            sprite.color.set_a(alpha.min(1.));
         }
     }
 }

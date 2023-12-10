@@ -5,6 +5,8 @@ use bevy_asset_loader::prelude::*;
 pub struct MyAssets {
     #[asset(path = "img/playerShip1_green.png")]
     pub player: Handle<Image>,
+    #[asset(path = "img/ufoGreen.png")]
+    pub ufo: Handle<Image>,
 
     #[asset(path = "img/laserBlue06.png")]
     pub player_bullet: Handle<Image>,
