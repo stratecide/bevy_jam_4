@@ -15,16 +15,19 @@ pub fn setup_ui(
     assets: Res<MyAssets>,
     images: Res<Assets<Image>>,
 ) {
-    commands.spawn(NodeBundle {
-        style: Style {
-            width: Val::Percent(100.),
-            height: Val::Percent(100.),
-            justify_content: JustifyContent::SpaceBetween,
-            flex_direction: FlexDirection::Column,
+    commands.spawn((
+        GuiParent,
+        NodeBundle {
+            style: Style {
+                width: Val::Percent(100.),
+                height: Val::Percent(100.),
+                justify_content: JustifyContent::SpaceBetween,
+                flex_direction: FlexDirection::Column,
+                ..Default::default()
+            },
             ..Default::default()
-        },
-        ..Default::default()
-    })
+        }
+    ))
     .with_children(|parent| {
         // top ui
         parent.spawn(NodeBundle {
@@ -429,4 +432,11 @@ pub fn update_shop(
             }
         }
     }
+}
+
+pub fn delete_ui(
+    mut commands: Commands,
+    gui_query: Query<Entity, With<GuiParent>>,
+) {
+    commands.entity(gui_query.single()).despawn_recursive();
 }

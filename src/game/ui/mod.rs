@@ -24,9 +24,9 @@ impl Plugin for UiPlugin {
         ).in_set(GameSystems::SpawnEnemy))
         .add_systems(Update, open_shop.run_if(in_state(GameState::Game).and_then(in_state(PauseState::Unpaused))))
         .add_systems(Update, update_shop.run_if(in_state(GameState::Game).and_then(in_state(PauseState::Shop))))
-        /*.add_systems(OnExit(GameState::Game), (
-            despawn::<Player>,
-        ))*/
+        .add_systems(OnExit(GameState::Game), (
+            delete_ui,
+        ))
         ;
     }
 }

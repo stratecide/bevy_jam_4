@@ -23,6 +23,10 @@ impl Plugin for PlayerPlugin {
         ))
         .add_systems(OnExit(GameState::Game), (
             despawn::<Player>,
+            despawn::<PlayerUfo>,
+        ))
+        .add_systems(OnExit(GameState::Game), (
+            despawn::<PlayerSatellite>,
         ))
         .add_systems(FixedUpdate, (
             player_wasd,

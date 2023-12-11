@@ -29,7 +29,6 @@ impl Plugin for GamePlugin {
         .add_plugins(ui::UiPlugin)
         .add_state::<PauseState>()
         .add_systems(OnEnter(GameState::Game), (
-            spawn_camera,
             reset_resources,
         ))
         .configure_sets(FixedUpdate, (
@@ -46,6 +45,7 @@ impl Plugin for GamePlugin {
         .add_systems(FixedUpdate, tick_wave_timer.in_set(GameSystems::SpawnEnemy))
         .add_systems(FixedUpdate, (
             level_up,
+            end_game,
         ).run_if(in_state(GameState::Game).and_then(in_state(PauseState::Unpaused))))
         ;
     }

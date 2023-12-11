@@ -2,8 +2,12 @@ use std::collections::HashMap;
 
 use bevy::prelude::*;
 
+use crate::GameState;
+use crate::menu::resource::CurrentScoreIndex;
+use crate::menu::resource::HighScores;
 use crate::my_assets::MyAssets;
 
+use super::PauseState;
 use super::enemy::SPAWN_DISTANCE;
 use super::enemy::resource::EnemyUpgrades;
 use super::enemy::resource::Waves;
@@ -13,15 +17,6 @@ use super::player::resource::Upgrades;
 use super::weapon::component::Bullet;
 use super::resource::*;
 use super::component::*;
-
-pub fn spawn_camera(
-    mut commands: Commands
-) {
-    commands.spawn(Camera2dBundle {
-        transform: Transform::from_xyz(0., 0., 1000.),
-        ..Default::default()
-    });
-}
 
 pub fn reset_resources(
     mut commands: Commands
@@ -107,4 +102,28 @@ pub fn fade_out(
             }
         }
     }
+}
+
+pub fn end_game(
+    player_query: Query<Entity, With<Player>>,
+    mut game_state: ResMut<NextState<GameState>>,
+    score: Res<Score>,
+    mut highscores: ResMut<HighScores>,
+    mut curent_score: ResMut<CurrentScoreIndex>,
+) {
+    for _ in &player_query {
+        return;
+    }
+    curent_score.0 = None;
+    curent_score.0 = highscores.0.iter().position(|s| *s <= score.0);
+    if curent_score.0 == None && highscores.0.len() < 10 {
+        curent_score.0 = Some(highscores.0.len());
+    }
+    if let Some(index) = curent_score.0 {
+        highscores.0.insert(index, score.0);
+    }
+    if highscores.0.len() > 10 {
+        highscores.0.pop();
+    }
+    game_state.set(GameState::Menu);
 }

@@ -4,7 +4,11 @@ use system::*;
 
 use bevy::prelude::*;
 
-use crate::game::GameSystems;
+use crate::{game::GameSystems, GameState};
+
+use self::component::Drop;
+
+use super::despawn;
 
 pub const PLAYER_COLLECTION_DISTANCE: f32 = 50.;
 
@@ -18,6 +22,9 @@ impl Plugin for DropsPlugin {
             .in_set(GameSystems::Collision))
         .add_systems(FixedUpdate, move_vacuumed
             .in_set(GameSystems::BulletMovement))
+        .add_systems(OnExit(GameState::Game), (
+            despawn::<Drop>,
+        ))
         ;
     }
 }

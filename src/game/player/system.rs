@@ -33,6 +33,7 @@ pub fn spawn_player(
             ..Default::default()
         },
         PlayerFriend,
+        PlayerUfo,
         PlayerMovement,
         PlayerSatellite(-0.5),
         SpiralCannon::new(0, 1., 0.3, 0, vec![(Vec2::splat(0.), false)]),

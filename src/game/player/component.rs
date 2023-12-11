@@ -8,6 +8,9 @@ pub const MAIN_WEAPON_COOLDOWN_REDUCTION: f32 = 0.2;
 pub struct Player;
 
 #[derive(Component)]
+pub struct PlayerUfo;
+
+#[derive(Component)]
 pub struct PlayerFriend;
 
 #[derive(Component)]

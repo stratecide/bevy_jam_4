@@ -1,6 +1,7 @@
 #![allow(clippy::too_many_arguments, clippy::type_complexity)]
 
 mod game;
+mod menu;
 mod my_assets;
 
 use bevy::asset::AssetMetaCheck;
@@ -31,16 +32,27 @@ fn main() {
             })
         )
         .add_plugins(game::GamePlugin)
+        .add_plugins(menu::MenuPlugin)
         .add_plugins(Material2dPlugin::<BackgroundMaterial>::default())
         // state
         .add_state::<GameState>()
-        .add_loading_state(LoadingState::new(GameState::Loading).continue_to_state(GameState::Game))
+        .add_loading_state(LoadingState::new(GameState::Loading).continue_to_state(GameState::Menu))
         .add_collection_to_loading_state::<_, my_assets::MyAssets>(GameState::Loading)
-        .add_systems(OnEnter(GameState::Game), (
+        .add_systems(OnExit(GameState::Loading), (
             spawn_background,
+            spawn_camera,
         ))
         .add_systems(Update, update_background)
         .run();
+}
+
+pub fn spawn_camera(
+    mut commands: Commands
+) {
+    commands.spawn(Camera2dBundle {
+        transform: Transform::from_xyz(0., 0., 1000.),
+        ..Default::default()
+    });
 }
 
 fn spawn_background(

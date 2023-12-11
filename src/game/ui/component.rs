@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 
 #[derive(Component)]
+pub struct GuiParent;
+
+#[derive(Component)]
 pub struct ExpBar;
 
 #[derive(Component)]
