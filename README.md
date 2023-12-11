@@ -3,6 +3,9 @@ Used Resources:
 
 - Bevy GitHub CI Template: https://github.com/bevyengine/bevy_github_ci_template
 - Space Shooter Redux: https://kenney.nl/assets/space-shooter-redux
+- shader noise from https://gist.github.com/munrocket/236ed5ba7e409b8bdf1ff6eca5dcdc39
+    - Simplex noise: MIT License. © Ian McEwan, Stefan Gustavson, Munrocket, Johan Helsing
+    - FBM: MIT License. © Inigo Quilez, Munrocket
 
 
 TODO:
