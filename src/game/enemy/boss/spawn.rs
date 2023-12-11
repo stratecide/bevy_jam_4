@@ -24,12 +24,13 @@ pub fn spawn_boss(
     mut bonus_drop: Option<Drop>,
 ) {
     let mut drops = vec![
-        Drop::Experience(10),
+        Drop::Experience(10 + 5 * difficulty),
     ];
     if let Some(drop) = bonus_drop.take() {
         drops.push(drop);
     }
-    let hp = 200 + (50 + difficulty) * difficulty * 20;
+    // 100, 210, 340, 490
+    let hp = 100 + (10 + difficulty) * difficulty * 10;
     let speed_modifier = 1. + difficulty as f32 / 3.;
     commands.spawn((
         SpriteBundle {
@@ -53,12 +54,12 @@ pub fn spawn_boss(
             target_distance: SPAWN_DISTANCE / 3.,
         }),
         MainCannon::new(3, 8. / (4. + difficulty as f32)),
-        SpiralCannon::new(3 + difficulty * 2, 1. / 4., 2., 4 + difficulty * 2, vec![
+        SpiralCannon::new(3 + difficulty * 2, 1. / 4., 2., 3 + difficulty * 2, vec![
             (Vec2::new(75., 30.), true),
             (Vec2::new(-75., 30.), false),
         ]),
         Drops {
-            score: 5000,
+            score: 1000,
             drops,
         },
     ));

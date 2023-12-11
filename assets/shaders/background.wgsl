@@ -1,10 +1,10 @@
 #import bevy_sprite::mesh2d_view_bindings::globals
 #import bevy_sprite::mesh2d_vertex_output::VertexOutput;
 
-@group(1) @binding(0) var<uniform> offset: vec2<f32>;
+@group(1) @binding(0) var<uniform> offset: vec4<f32>;
 
 fn stars(pos: vec2f, depth: f32) -> vec3f {
-    let p = pos + offset / pow(2., depth + 1.) + vec2f(1234.5678, 765.4321) * depth;
+    let p = pos + offset.xy / pow(2., depth + 1.) + vec2f(1234.5678, 765.4321) * depth;
     let v = (fbm(p / 200.) + 0.0) / 16. / (2. + depth);
     return vec3f(v);
 }

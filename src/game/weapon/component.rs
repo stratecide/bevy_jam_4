@@ -82,6 +82,7 @@ impl Weapon for MainCannon {
             settings: PlaybackSettings {
                 // get louder the more bullets are shot at once ..?
                 volume: Volume::Relative(VolumeLevel::new(0.5)),
+                mode: PlaybackMode::Despawn,
                 ..Default::default()
             }
         });
@@ -152,6 +153,7 @@ impl Weapon for StarCannon {
             settings: PlaybackSettings {
                 // get louder the more bullets are shot at once ..?
                 volume: Volume::Relative(VolumeLevel::new(0.4)),
+                mode: PlaybackMode::Despawn,
                 ..Default::default()
             }
         });
@@ -237,6 +239,7 @@ impl SpiralCannon {
             settings: PlaybackSettings {
                 // get louder the more bullets are shot at once ..?
                 volume: Volume::Relative(VolumeLevel::new(0.4)),
+                mode: PlaybackMode::Despawn,
                 ..Default::default()
             }
         });

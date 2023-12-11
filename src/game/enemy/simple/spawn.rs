@@ -88,8 +88,8 @@ pub fn spawn_red4(
     if let Some(drop) = bonus_drop.take() {
         drops.push(drop);
     }
-    // 4, 15, 28, 43, 60, 79
-    let hp = 4 + (10 + difficulty) * difficulty;
+    // 4, 8, 14, 22
+    let hp = 4 + (3 + difficulty) * difficulty;
     let speed_modifier = 1. + difficulty as f32 / 3.;
     commands.spawn((
         SpriteBundle {

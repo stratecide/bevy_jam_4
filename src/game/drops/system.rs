@@ -25,7 +25,7 @@ pub fn collect_drops(
             commands.entity(entity).despawn();
             match drop {
                 Drop::Coin => {
-                    increase_score(&mut commands, 1000, transform.translation.xy(), &mut score, &assets);
+                    increase_score(&mut commands, 200, transform.translation.xy(), &mut score, &assets);
                 }
                 Drop::Experience(exp) => experience.0 += *exp,
                 Drop::Vacuum => {

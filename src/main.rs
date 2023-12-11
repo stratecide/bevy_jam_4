@@ -3,6 +3,7 @@
 mod game;
 mod my_assets;
 
+use bevy::asset::AssetMetaCheck;
 use bevy::prelude::*;
 use bevy::render::render_resource::{AsBindGroup, ShaderRef};
 use bevy::sprite::{MaterialMesh2dBundle, Material2d, Material2dPlugin};
@@ -18,6 +19,7 @@ pub enum GameState {
 
 fn main() {
     App::new()
+        .insert_resource(AssetMetaCheck::Never)
         // plugins
         .add_plugins(DefaultPlugins)
         .add_plugins(game::GamePlugin)
@@ -42,7 +44,7 @@ fn spawn_background(
         transform: Transform::from_xyz(0., 0., 0.),
         mesh: meshes.add(shape::Quad::new(Vec2::splat(8000.)).into()).into(),
         material: materials.add(BackgroundMaterial {
-            offset: Vec2::splat(0.),
+            offset: Vec4::splat(0.),
         }),
         ..Default::default()
     });
@@ -70,7 +72,7 @@ fn update_background(
 #[derive(Asset, TypePath, Default, AsBindGroup, Debug, Clone)]
 pub struct BackgroundMaterial {
     #[uniform(0)]
-    pub offset: Vec2,
+    pub offset: Vec4,
 }
 
 impl Material2d for BackgroundMaterial {
