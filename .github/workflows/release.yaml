@@ -9,7 +9,7 @@ env:
   # update with the name of the main binary
   binary: bullet_hell
   add_binaries_to_github_release: true
-  #itch_target: <itch.io-username>/<game-name>
+  itch_target: stratecide/bevy-jam-4
 
 
 jobs:
