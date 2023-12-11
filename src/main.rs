@@ -21,7 +21,15 @@ fn main() {
     App::new()
         .insert_resource(AssetMetaCheck::Never)
         // plugins
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins
+            .set(WindowPlugin {
+                primary_window: Some(Window {
+                    fit_canvas_to_parent: true,
+                    ..default()
+                }),
+                ..default()
+            })
+        )
         .add_plugins(game::GamePlugin)
         .add_plugins(Material2dPlugin::<BackgroundMaterial>::default())
         // state
